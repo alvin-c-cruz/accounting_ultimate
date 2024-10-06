@@ -7,7 +7,7 @@ from .models import User
 class UserView(MethodView):
     def get(self):
         # Render the HTML form for user creation
-        return render_template('user/form.html')
+        return render_template('users/form.html')
 
     def post(self):
         # Handle form submission and user creation
