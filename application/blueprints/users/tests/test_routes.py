@@ -1,5 +1,5 @@
-from .. models import User, db
-
+from ..models import User, db
+from werkzeug.security import check_password_hash, generate_password_hash
 
 def test_create_user(client):
     """Test creating a user via the POST request."""
@@ -26,6 +26,9 @@ def test_create_user(client):
     assert created_user is not None
     assert created_user.username == 'testuser'
     assert created_user.email == 'test@example.com'
+
+    # Ensure the password has been hashed
+    assert check_password_hash(created_user.password, 'pass_word')
 
 
 def test_read_user(client):
@@ -57,7 +60,7 @@ def test_read_user(client):
 def test_update_user(client):
     """Test updating a user's information."""
     # First, create a user
-    user = User(username='updateuser', password='updatepassword', email='updateuser@example.com')
+    user = User(username='updateuser', password=generate_password_hash('updatepassword'), email='updateuser@example.com')
     db.session.add(user)
     db.session.commit()
 
@@ -82,14 +85,13 @@ def test_update_user(client):
     assert updated_user.email == 'newupdate@example.com'
 
     # Ensure the password has been updated (hashed)
-    from werkzeug.security import check_password_hash
     assert check_password_hash(updated_user.password, 'new_password')
 
 
 def test_delete_user(client):
     """Test deleting a user."""
     # First, create a user to delete
-    user = User(username='deleteuser', password='deletepassword', email='deleteuser@example.com')
+    user = User(username='deleteuser', password=generate_password_hash('deletepassword'), email='deleteuser@example.com')
     db.session.add(user)
     db.session.commit()
 

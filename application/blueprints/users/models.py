@@ -12,6 +12,4 @@ class User(db.Model):
     email = db.Column(db.String(120))
 
     def __repr__(self):
-        return f'<User {self.username}>'
-
-    # Optional: Add any custom methods for the User model here
+        return f'{self.first_name} {self.last_name}'

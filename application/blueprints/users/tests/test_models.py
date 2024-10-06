@@ -27,7 +27,7 @@ def test_create_user(new_user):
 
 def test_repr(new_user):
     """Test the __repr__ method of the User model."""
-    assert repr(new_user) == '<User testuser>'
+    assert repr(new_user) == 'First Last'
 
 def test_add_user_to_db(client, new_user):
     """Test adding a user to the database and checking hashed password."""

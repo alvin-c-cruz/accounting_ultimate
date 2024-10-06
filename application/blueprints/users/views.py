@@ -7,7 +7,7 @@ from .models import User
 class UserView(MethodView):
     def get(self):
         # Render the HTML form for user creation
-        return render_template('user_form.html')
+        return render_template('user/form.html')
 
     def post(self):
         # Handle form submission and user creation
@@ -51,17 +51,24 @@ class UserView(MethodView):
 
     def put(self, username):
         # Handle user update
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first_or_404()
 
         if not user:
             return jsonify({'error': 'User not found.'}), 404
 
         # Get updated fields
         password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
         last_name = request.form.get('last_name')
         email = request.form.get('email')
+
+        if not password:
+            return jsonify({'error': 'Please type password.'})
+        
+        if password != confirm_password:
+            return jsonify({'error': 'Password are not identical.'})
 
         # Update user information
         if password:
