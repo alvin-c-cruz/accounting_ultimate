@@ -64,7 +64,7 @@ def test_update_user(client):
     # Update the user via a PUT request
     response = client.put(f'/user/update/{user.username}', data={
         'password': 'new_password',  # New password
-        'confirm_password': 'new_password'
+        'confirm_password': 'new_password',
         'first_name': 'UpdatedFirst',
         'middle_name': 'UpdatedMiddle',
         'last_name': 'UpdatedLast',
