@@ -1,17 +1,18 @@
-from application.models import User, db
+from application.blueprints.users.models import User, db
 
 
 def test_create_user(client):
     """Test creating a user via the POST request."""
-    response = client.post('/user', data={
+    response = client.post('/user/create', data={
         'username': 'testuser',
         'password': 'pass_word',
+        'confirm_password': 'pass_word',
         'first_name': 'firstname',
         'middle_name': 'middlename',
         'last_name': 'lastname',
         'email': 'test@example.com',
     })
-    
+       
     # Check if the response indicates a redirect (302) after successful creation
     assert response.status_code == 302
     
@@ -30,9 +31,10 @@ def test_create_user(client):
 def test_read_user(client):
     """Test retrieving a user."""
     # Create a new user in the database for testing the read operation
-    response = client.post('/user', data={
+    response = client.post('/user/create', data={
         'username': 'readuser',
         'password': 'readpassword',
+        'confirm_password': 'readpassword',
         'first_name': 'Read',
         'middle_name': 'User',
         'last_name': 'Lastname',
@@ -62,6 +64,7 @@ def test_update_user(client):
     # Update the user via a PUT request
     response = client.put(f'/user/update/{user.username}', data={
         'password': 'new_password',  # New password
+        'confirm_password': 'new_password'
         'first_name': 'UpdatedFirst',
         'middle_name': 'UpdatedMiddle',
         'last_name': 'UpdatedLast',

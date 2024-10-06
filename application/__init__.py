@@ -18,7 +18,7 @@ def create_app(config_name='default'):
     db.init_app(app)
 
     # Register blueprints for your routes
-    from application.routes import users_bp
+    from application.blueprints.users.routes import users_bp
     app.register_blueprint(users_bp, url_prefix='/')
 
     migrate = Migrate(app, db)

@@ -2,9 +2,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, jsonify, render_template, redirect, url_for
 from flask.views import MethodView
 from application import db
-from application.models import User
+from .models import User
 
-class UserAPI(MethodView):
+class UserView(MethodView):
     def get(self):
         # Render the HTML form for user creation
         return render_template('user_form.html')
@@ -13,6 +13,7 @@ class UserAPI(MethodView):
         # Handle form submission and user creation
         username = request.form.get('username')
         password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
         last_name = request.form.get('last_name')
@@ -21,6 +22,12 @@ class UserAPI(MethodView):
         # Validate that the required fields are filled
         if not username or not email:
             return jsonify({'error': 'Username and email are required.'}), 400
+        
+        if not password:
+            return jsonify({'error': 'Please type password.'})
+        
+        if password != confirm_password:
+            return jsonify({'error': 'Password are not identical.'})
 
         # Hash the password before saving it
         hashed_password = generate_password_hash(password)

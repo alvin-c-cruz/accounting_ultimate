@@ -1,7 +1,7 @@
 import pytest
 from werkzeug.security import check_password_hash, generate_password_hash
 from application import db
-from application.models import User
+from application.blueprints.users.models import User
 
 @pytest.fixture(scope='module')
 def new_user():
