@@ -1,4 +1,4 @@
-from application.blueprints.users.models import User, db
+from .. models import User, db
 
 
 def test_create_user(client):
