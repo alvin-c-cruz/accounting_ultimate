@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Link to CSS files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nav.css') }}">
+</head>
+<body>
+    <div id="top_content">
+        {% block top_content %}
+            {% include "navbar.html" %}
+        {% endblock %}
+    </div>
+
+    <div id="left_content">
+        {% block left_content %}{% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="right_content">
+        {% block right_content %}{% endblock %}
+    </div>
+
+    <div id="bottom_content">
+        {% block bottom_content %}{% endblock %}
+    </div>
+
+    <script>
+        // JavaScript for responsive menu toggle
+        const toggle = document.getElementById('menu-toggle');
+        const navContainer = document.querySelector('.nav-container');
+    
+        toggle.addEventListener('click', function () {
+            navContainer.classList.toggle('active');
+        });
+    </script>
+    
+</body>
+</html>

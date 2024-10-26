@@ -1,0 +1,78 @@
+/* General Styles for Navigation */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #254830;
+    padding: 10px 20px;
+    color: white;
+}
+
+/* Logo Styling */
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: auto; /* Push the logo to the left */
+}
+
+/* Container for Left and Right Menus */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Left and Right Menu Groups */
+.left-nav, .right-nav {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+/* Link Styling */
+.left-nav a, .right-nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    padding: 20px;
+}
+
+.left-nav a:hover, .right-nav a:hover {
+    color: #dbe549;
+    background-color: #3c7e51;
+}
+
+/* Menu Toggle Icon for Mobile */
+.menu-toggle {
+    display: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .nav-container {
+        display: none;
+        flex-direction: column;
+        background-color: #254830;
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        width: 200px;
+    }
+
+    .nav-container.active {
+        display: flex;
+    }
+
+    .left-nav, .right-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+}

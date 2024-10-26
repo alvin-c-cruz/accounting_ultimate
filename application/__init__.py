@@ -1,11 +1,14 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template
 from instance.config import config
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import login_required
+
+from .extensions import db
+
+from . import blueprints
 
 # Initialize the SQLAlchemy object
-db = SQLAlchemy()
+
 
 def create_app(config_name='default'):
     # Create an instance of Flask
@@ -16,10 +19,15 @@ def create_app(config_name='default'):
 
     # Initialize database with the app
     db.init_app(app)
-
+        
     # Register blueprints for your routes
-    from application.blueprints.users.routes import users_bp
-    app.register_blueprint(users_bp, url_prefix='/')
+    module_names = [
+        "main",
+        "users"
+    ]
+    
+    for module_name in module_names:
+        app.register_blueprint(getattr(blueprints, module_name).bp)
 
     migrate = Migrate(app, db)
 
