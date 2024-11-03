@@ -1,9 +1,16 @@
 from application import create_app
+import socket
 
-# Create the app by calling create_app and passing the environment configuration
-app = create_app('development')
+app = create_app()
 
-if __name__ == '__main__':
-    # Run the app with the Flask built-in development server
-    # The host='0.0.0.0' makes the app externally visible (if needed for testing in networks)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == "__main__":   
+    app.config["FLASKENV"] = "development"
+    app.debug = True
+    
+    host = socket.gethostbyname(socket.gethostname())
+    port = 8000
+    
+    web_site = f"http://{host}:{port}"
+    print(f"Please type on your browser this web address: {web_site}")
+    
+    app.run(host="0.0.0.0", port=port)

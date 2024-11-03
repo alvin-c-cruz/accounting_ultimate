@@ -1,21 +1,47 @@
-<nav class="navbar">
-    <div class="logo">Your Logo</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          {% if current_user.is_active %}
 
-    <div class="nav-container">
-        <!-- Left Group of Menus -->
-        <ul class="left-nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/services">Services</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
+            {% if "Account Classification" in current_user.user_roles %}    
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Chart of Accounts
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{{ url_for('account_classification.home') }}">Account Classification</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('account.home') }}">Accounts</a></li>
+              <li><hr class="dropdown-divider"></li>
+            </ul>
+          </li>
+            {% endif %}
 
-        <!-- Right Group of Menus -->
-        <ul class="right-nav">
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Options
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% if current_user.admin %}    
+              <li><a class="dropdown-item" href="{{ url_for('user.user_list') }}">User Register</a></li>
+              <li><hr class="dropdown-divider"></li>
+            {% endif %}
+            </ul>
+          </li>
+          {% endif %}
+          
+          <li class="nav-item">
+            <span class="nav-link">Logged in as {{ current_user.user_name }}</span>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-link nav-link custom-border" href="{{ url_for('user.logout') }}">Logout</a>
+          </li>
         </ul>
+      </div>
     </div>
-
-    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
 </nav>
+  
