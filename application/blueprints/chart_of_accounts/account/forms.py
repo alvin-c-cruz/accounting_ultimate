@@ -89,7 +89,7 @@ class Form:
             self.errors["account_number"] = "Please type account number."
         else:
             if not self.id:
-                _existing = Obj.query.filter(account_number=self.account_number).first()
+                _existing = Obj.query.filter(Obj.account_number==self.account_number).first()
             else:
                 _existing = Obj.query.filter(
                     func.lower(Obj.account_number) == func.lower(self.account_number), 
@@ -103,7 +103,7 @@ class Form:
             self.errors["account_name"] = "Please type account title."
         else:
             if not self.id:
-                _existing = Obj.query.filter(account_name=self.account_name).first()
+                _existing = Obj.query.filter(Obj.account_name==self.account_name).first()
             else:
                 _existing = Obj.query.filter(
                     func.lower(Obj.account_name) == func.lower(self.account_name), 
