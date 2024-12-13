@@ -112,6 +112,23 @@ def approve(record_id):
     return redirect(url_for(f'{app_name}.home'))   
     
 
+@bp.route("/approve_home/<int:record_id>", methods=['GET'])
+@login_required
+@roles_accepted([ROLES_ACCEPTED])
+def approve_home(record_id):
+    if not current_user.admin:
+        flash("Administrator rights required.", category="error")
+        return redirect(url_for(f"{app_name}.home"))
+    
+    obj = Obj.query.get_or_404(record_id)
+    obj.locked = True
+
+    db.session.commit()
+
+    flash(f"Approved: {obj}", category="success")
+    return redirect(url_for(f'main.home'))   
+    
+
 @bp.route("/activate/<int:record_id>", methods=["POST", "GET"])
 @login_required
 @roles_accepted([ROLES_ACCEPTED])

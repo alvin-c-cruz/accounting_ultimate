@@ -8,19 +8,17 @@ bp = Blueprint('main', __name__, template_folder="pages")
 @bp.route("/")
 @login_required
 def home():
-    
+    from application.blueprints.chart_of_accounts.account import Account
+    from application.blueprints.raw_material.raw_material import RawMaterial
 
     modules = {
-        # "customers": Customer,
-        # "measures": Measure,
-        # "plastic_labels": PlasticLabel,
-        # "vendors": Vendor,
-        # "departments": Department 
+        "accounts": Account, 
+        "raw_materials": RawMaterial,
     }
 
     context = {}
     for module_name, module in modules.items():
-        context[module_name] = [record for record in getattr(module, "query").all() if not record.approved]
+        context[module_name] = [record for record in getattr(module, "query").all() if not record.locked]
 
     return render_template("main/home.html", **context)
 

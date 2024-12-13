@@ -251,11 +251,11 @@ def default_classifications():
     from .models import User
     
     classifications = [
-        "CASH", "RECEIVABLE", "INVENTORY", "OTHER CURRENT ASSET", 
-        "FIXED ASSET", "OTHER ASSET",
+        "CASH AND CASH EQUIVALENTS", "RECEIVABLE", "INVENTORIES", "OTHER CURRENT ASSETS", 
+        "FIXED ASSETS", "OTHER ASSETS",
         "ACCOUNTS PAYABLE", "OTHER PAYABLE", "LONG-TERM LOAN",
         "EQUITY", "RETAINED EARNINGS", "EQUITY-GET-CLOSED",
-        "REVENUE", "COST OF SALES", "OPERATING EXPENSES",
+        "REVENUES", "COST OF SALES", "OPERATING EXPENSES",
         "OTHER INCOME", "OTHER EXPENSES"
         ]
     

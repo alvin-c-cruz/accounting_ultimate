@@ -8,40 +8,6 @@ from . blueprints.user import User
 from . import blueprints
 
 
-def navigations():
-    user_nav = {}
-
-    options = "main/option_menu.html"
-
-    plastic_product_component = "plastic_product_component/dropdown_menu.html"
-    plastic_label = "plastic_label/dropdown_menu.html"
-
-    lithography = "lithography/dropdown_menu.html"
-
-    user_nav["admin"] = [
-        plastic_product_component,
-        plastic_label,
-        lithography,
-        options,
-        ]
-    
-    user_nav["alvin"] = [
-        plastic_label,
-        options,
-        ]
-    
-    user_nav["Arvie"] = [
-        plastic_label,
-        options,
-        ]
-    
-    user_nav["chaynamey"] = [
-        lithography,
-        options,
-        ]
-    
-    return user_nav
-
 def create_app(test=False):
     app = Flask(__name__, instance_relative_config=True)
     if test:
@@ -49,7 +15,6 @@ def create_app(test=False):
     else:
         app.config.from_pyfile('config.py')
 
-    app.config['NAVIGATIONS'] = navigations()
 
     instance_path = Path(app.instance_path)
     parent_directory = Path(instance_path.parent)
