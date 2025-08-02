@@ -39,7 +39,7 @@ def journal():
             records = Obj.query.filter(
                 Obj.record_date.between(date_from, date_to)
             ).order_by(
-                Obj.record_date.desc(), Obj.id.desc()
+                Obj.record_number,
             ).all()
 
             rows = create_journal(records)
@@ -54,7 +54,7 @@ def journal():
         records = Obj.query.filter(
             Obj.record_date.between(date_from, date_to)
         ).order_by(
-            Obj.record_date.desc(), Obj.id.desc()
+             Obj.record_number,
         ).all()
         rows = create_journal(records)
 
@@ -276,7 +276,7 @@ def download():
     
     rows = Obj.query.filter(
         Obj.record_date.between(date_from, date_to)).order_by(
-        Obj.record_date.desc(), Obj.id.desc()
+         Obj.record_number,
         ).all()
 
     filename = create_journal(rows, current_app, date_from, date_to)

@@ -146,17 +146,37 @@ def WriteData(wb, data, date_from, date_to):
         # Style the row
         for cell in ws[ws.max_row]:
             cell.border = thin_border
-            cell.alignment = Alignment(horizontal="right", vertical="top")
+            col_letter = get_column_letter(cell.column)
+            if col_letter in ("A", "B", "C"):
+                cell.alignment = Alignment(horizontal="center", vertical="top")
+            elif col_letter in ("D", "E"):
+                cell.alignment = Alignment(horizontal="left", vertical="top")
+            else:
+                cell.alignment = Alignment(horizontal="right", vertical="top")
             if isinstance(cell.value, (int, float, Decimal)):
                 cell.number_format = '#,##0.00_ ;(#,##0.00)'
 
     # --- Append Totals ---
-    total_row = [""] * 5  # Skip fixed columns
-    for acct in account_names:
-        amt = totals[acct]
-        total_row.append(amt if amt != 0 else "")
+    # Determine row bounds for data
+    data_start_row = 5  # Header is on row 4; data starts at 5
+    data_end_row = ws.max_row
+
+    # Start building the total row
+    total_row = [""] * 5  # Leave first 5 columns blank
+    for col_idx in range(6, 6 + len(account_names)):  # starting from column F (index 6)
+        col_letter = get_column_letter(col_idx)
+        formula = f"=SUM({col_letter}{data_start_row}:{col_letter}{data_end_row})"
+        total_row.append(formula)
 
     ws.append(total_row)
+
+    # Style the total row
+    for cell in ws[ws.max_row]:
+        cell.border = double_rule_border
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal="right", vertical="top")
+        cell.number_format = '#,##0.00_ ;(#,##0.00)'
+
     for cell in ws[ws.max_row]:
         cell.border = double_rule_border
         cell.font = Font(bold=True)

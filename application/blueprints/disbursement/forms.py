@@ -269,36 +269,45 @@ class Form:
             self.errors["record_number"] = "Please type disbursement number."
         else:
             duplicate = Obj.query.filter(
-                func.lower(
-                    Obj.record_number
-                    ) == func.lower(self.record_number), 
-                    Obj.id != self.id
-                    ).first()
+                func.lower(Obj.record_number) == func.lower(self.record_number), 
+                Obj.id != self.id
+            ).first()
             if duplicate:
-                self.errors["record_number"] = "Disbursment number is already used, please verify."        
+                self.errors["record_number"] = "Disbursement number is already used, please verify."        
 
         if not self.vendor_name:
             self.errors["vendor_name"] = "Please type vendor."
         else:
-            vendor = Vendor.query.filter(Vendor.vendor_name==self.vendor_name).first()
+            vendor = Vendor.query.filter(Vendor.vendor_name == self.vendor_name).first()
             if not vendor:
-                self.errors["vendor_name"] = f"{self.vendor_name} does not exists."
+                self.errors["vendor_name"] = f"{self.vendor_name} does not exist."
 
+        total_debit = 0
+        total_credit = 0
+        all_not_dirty = True
 
         for i in range(DETAIL_ROWS):
-            if not self.details[i][1]._validate():
-                detail_validation = False
+            detail = self.details[i][1]
 
-        all_not_dirty = True
-        for _, detail in self.details:
             if detail._is_dirty():
                 all_not_dirty = False
 
+                # Validate subform
+                if not detail._validate():
+                    detail_validation = False
+
+                total_debit += detail.debit
+                total_credit += detail.credit
+
         if all_not_dirty:
-            self.errors["entry"] = "There should be at least one entry."       
+            self.errors["entry"] = "There should be at least one entry."
+
+        # Check if total debit equals total credit
+        if round(total_debit, 2) != round(total_credit, 2):
+            self.errors["totals"] = f"Total debit ({total_debit:,.2f}) and credit ({total_credit:,.2f}) must be equal."
 
         if not self.errors and detail_validation:
-            return True        
+            return True  
     
     def _submit(self):
         self.submitted = str(datetime.today())[:10]
