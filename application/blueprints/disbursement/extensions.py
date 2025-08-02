@@ -99,20 +99,33 @@ def WriteData(wb, data, date_from, date_to):
 
     # --- Write data rows ---
     for disbursement in data:
-        base_info = {
-            "date": disbursement.record_date,
-            "no": disbursement.record_number,
-            "ap": disbursement.ap_number,
-            "vendor": disbursement.vendor.vendor_name if disbursement.vendor else "",
-            "desc": disbursement.description
-        }
+        if not disbursement.cancelled:
+            base_info = {
+                "date": disbursement.record_date,
+                "no": disbursement.record_number,
+                "ap": disbursement.ap_number,
+                "vendor": disbursement.vendor.vendor_name if disbursement.vendor else "",
+                "desc": disbursement.description
+            }
+        else:
+            base_info = {
+                "date": disbursement.record_date,
+                "no": disbursement.record_number,
+                "ap": "",
+                "vendor": "CANCELLED",
+                "desc": ""
+            }
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
         for detail in disbursement.disbursement_details:
             name = detail.account.account_title if detail.account else ""
-            row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
-            totals[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
+            if not disbursement.cancelled:
+                row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
+                totals[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
+            else:
+                row_data[name] += 0
+                totals[name] += 0                
 
         # Prepare the row
         row = [

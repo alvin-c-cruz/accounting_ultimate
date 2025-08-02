@@ -194,9 +194,9 @@ def upload():
                 continue
 
             account = Obj(
-                account_number=str(account_number),
-                account_title=str(account_title),
-                account_description=str(account_description or "")
+                account_number=str(account_number).upper(),
+                account_title=str(account_title).upper(),
+                account_description=str(account_description or "").upper()
             )
 
             db.session.add(account)
