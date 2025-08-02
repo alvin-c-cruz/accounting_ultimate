@@ -43,35 +43,26 @@
                 <table class="table table-hover mb-0">
                     <thead class="thead-light">
                         <tr>
+                            <th>Action</th>
+                            <th>Status</th>
                             <th>Date</th>
                             <th>Disbursement No.</th>
                             <th>Vendor</th>
                             <th>Description</th>
                             <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in rows %}
                         <tr>
-                            <td>{{ row.formatted_record_date }}</td>
-                            <td>{{ row.record_number }}</td>
-                            <td>{{ row.vendor.vendor_name }}</td>
-                            <td>{{ row.description }}</td>
-                            <td class="text-right">{{ row.formatted_amount }}</td>
-                            <td>
-                                {% if row.cancelled %}
-                                    <span class="text-danger">Cancelled<br>{{ row.formatted_cancelled }}</span>
-                                {% elif row.submitted %}
-                                    <span class="text-warning">For Billing<br>{{ row.formatted_submitted }}</span>
-                                {% else %}
-                                    <span class="text-success font-weight-bold">DRAFT</span>
-                                {% endif %}
-                            </td>
                             <td>
                                 {% if row.submitted or row.cancelled %}
                                     <a href="{{ url_for('disbursement.view', record_id=row.id) }}" class="btn btn-warning btn-sm">View</a>
+                                    {% if current_user.admin %}
+                                    <a href="{{ url_for('disbursement.unlock', record_id=row.id) }}"
+                                       class="btn btn-info btn-sm"
+                                       onclick="return confirmMessage('Type YES to unlock this record.')">Unlock</a>
+                                    {% endif %}
                                 {% else %}
                                     <a href="{{ url_for('disbursement.edit', record_id=row.id) }}" class="btn btn-warning btn-sm">Edit</a>
                                     {% if current_user.admin %}
@@ -81,6 +72,20 @@
                                     {% endif %}
                                 {% endif %}
                             </td>
+                            <td>
+                                {% if row.cancelled %}
+                                    <span class="text-danger">Cancelled<br>{{ row.formatted_cancelled }}</span>
+                                {% elif row.submitted %}
+                                    <span class="text-warning">For Approval<br>{{ row.formatted_submitted }}</span>
+                                {% else %}
+                                    <span class="text-success font-weight-bold">DRAFT</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ row.formatted_record_date }}</td>
+                            <td>{{ row.record_number }}</td>
+                            <td>{{ row.vendor.vendor_name }}</td>
+                            <td>{{ row.description }}</td>
+                            <td class="text-right">{{ row.formatted_amount }}</td>
                         </tr>
                         {% endfor %}
                         {% if rows|length == 0 %}
