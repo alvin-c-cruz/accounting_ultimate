@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, send_file
 from flask_login import current_user
-from dataclasses import dataclass
 import datetime
 from sqlalchemy.exc import IntegrityError
 from .models import Disbursement as Obj
@@ -67,7 +66,7 @@ def journal():
     return render_template(f"{app_name}/journal.html", **context)
 
 
-@bp.route("/", methods=["POST", "GET"])
+@bp.route("/", methods=["GET", "POST"])
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
 def home():
@@ -79,15 +78,25 @@ def home():
         date_to = month_last_day()
 
     rows = Obj.query.filter(
-        Obj.record_date.between(date_from, date_to)).order_by(
-        Obj.record_date.desc(), Obj.id.desc()
-        ).all()
-        
+        Obj.record_date.between(date_from, date_to)
+    ).order_by(
+        Obj.record_date, Obj.id
+    ).all()
+
+    # Collect all account titles that appear in the disbursement details
+    account_titles = sorted({
+        detail.account.account_title
+        for row in rows
+        for detail in row.disbursement_details
+    })
 
     context = {
-        "rows": rows,
-        "date_from": date_from,
-        "date_to": date_to,
+        "rows": rows, 
+        "date_from": date_from, 
+        "date_to": date_to, 
+        "account_titles": account_titles, 
+        "app_name": app_name,
+        "app_label": app_label
     }
 
     return render_template(f"{app_name}/home.html", **context)

@@ -13,7 +13,6 @@ class Disbursement(db.Model):
     vendor = db.relationship('Vendor', backref='disbursements', lazy=True)
 
     ap_number = db.Column(db.String())
-    po_number = db.Column(db.String())
 
     prepared_by = db.Column(db.String())
     checked_by = db.Column(db.String())

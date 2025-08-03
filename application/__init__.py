@@ -2,63 +2,12 @@ from flask import Flask, request, redirect, url_for, abort, g
 
 from pathlib import Path
 from http import HTTPStatus
+from datetime import timedelta
 
 from . extensions import db, bcrypt, mail, migrate, login_manager
 from . blueprints.user import User
 from . import blueprints
 
-
-def navigations():
-    user_nav = {}
-
-    options = "main/option_menu.html"
-
-    plastic_product_component = "plastic_product_component/dropdown_menu.html"
-    plastic_label = "plastic_label/dropdown_menu.html"
-    product = "product/dropdown_menu.html"
-
-    lithography = "lithography/dropdown_menu.html"
-
-    user_nav["admin"] = user_nav["Salve"] = [
-        product,
-        plastic_product_component,
-        plastic_label,
-        lithography,
-        options,
-        ]
-    
-    # user_nav["alvin"] = [
-    #     product,
-    #     options,
-    #     ]
-    
-    user_nav["Sofia"] = [
-        product,
-        options,
-        ]
-    
-    user_nav["WARLITOFUENTES"] = [
-        product,
-        options,
-        ]
-    
-    # user_nav["Arvie"] = [
-    #     plastic_label,
-    #     options,
-    #     ]
-    
-    user_nav["chaynamey"] = [
-        lithography,
-        options,
-        ]
-    
-    user_nav["pat"] = [
-        plastic_product_component,
-        lithography,
-        options,
-        ]
-    
-    return user_nav
 
 def create_app(test=False):
     app = Flask(__name__, instance_relative_config=True)
@@ -67,7 +16,7 @@ def create_app(test=False):
     else:
         app.config.from_pyfile('config.py')
 
-    app.config['NAVIGATIONS'] = navigations()
+    app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)
 
     instance_path = Path(app.instance_path)
     parent_directory = Path(instance_path.parent)
@@ -76,8 +25,6 @@ def create_app(test=False):
     
     if not instance_path.is_dir():
         instance_path.mkdir()
-    
-    
     
     login_manager.init_app(app)
 

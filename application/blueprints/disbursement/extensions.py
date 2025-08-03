@@ -5,6 +5,7 @@ import numpy as np
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
+from datetime import datetime
 
 from .models import Disbursement, DisbursementDetail
 from .. vendor import Vendor  # adjust path as needed
@@ -26,29 +27,26 @@ double_rule_border = Border(bottom=Side(style='double'))
 
 ALIGNMENT = {
                 "Date": Alignment(horizontal="center", vertical="top"),
-                "No.": Alignment(horizontal="center", vertical="top"),
-                "Invoice Number": Alignment(horizontal="center", vertical="top"),
+                "CD No.": Alignment(horizontal="center", vertical="top"),
+                "AP No.": Alignment(horizontal="center", vertical="top"),
                 "Vendor": Alignment(horizontal="left", vertical="top", wrap_text=True),
                 "Particulars": Alignment(horizontal="left", vertical="top", wrap_text=True),
-                "Posted": Alignment(horizontal="center", vertical="center", wrap_text=True)
             }
 
 NUMBER_FORMAT = {
                 "Date": "yyyy-mmm-dd",
-                "No.": "General",
-                "Invoice Number": "General",
+                "CD No.": "General",
+                "AP No.": "General",
                 "Vendor": "General",
                 "Particulars": "General",
-                "Posted": "General",
             }
 
 COLUMN_WIDTH = {
                 "Date": 12,
-                "No.": 10,
-                "Invoice Number": 12,
+                "CD No.": 10,
+                "AP No.": 12,
                 "Vendor": 20,
                 "Particulars": 25,
-                "Posted": 7,
             }
 
 
@@ -71,12 +69,17 @@ def create_journal(data, app, date_from, date_to):
 
 def WriteData(wb, data, date_from, date_to):
     ws = wb.active
-    ws.title = "Disbursement Journal"
+    ws.title = app_name
+    date_from = datetime.strptime(date_from, "%Y-%m-%d").strftime("%B %d, %Y")
+    date_to = datetime.strptime(date_to, "%Y-%m-%d").strftime("%B %d, %Y")
 
     # Title
-    ws.append([f"{app_label.upper()} DISBURSEMENT JOURNAL"])
-    ws.append([f"PERIOD COVERED: {date_from} TO {date_to}"])
+    ws.append([f"{app_label.upper()} JOURNAL"])
+    ws.append([f"From {date_from} to {date_to}"])
     ws.append([])
+    
+    ws["A1"].font = Font(bold=True, size=16)
+    ws["A2"].font = Font(bold=True)
 
     # --- Determine all account titles to create dynamic columns ---
     account_names = set()
@@ -86,7 +89,7 @@ def WriteData(wb, data, date_from, date_to):
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "No.", "Invoice Number", "Vendor", "Particulars"] + account_names
+    header = ["Date", "CD No.", "AP No.", "Vendor", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -105,7 +108,7 @@ def WriteData(wb, data, date_from, date_to):
                 "no": disbursement.record_number,
                 "ap": disbursement.ap_number,
                 "vendor": disbursement.vendor.vendor_name if disbursement.vendor else "",
-                "desc": disbursement.description
+                "desc": disbursement.description,
             }
         else:
             base_info = {
@@ -113,7 +116,7 @@ def WriteData(wb, data, date_from, date_to):
                 "no": disbursement.record_number,
                 "ap": "",
                 "vendor": "CANCELLED",
-                "desc": ""
+                "desc": "",
             }
 
         # Aggregate account values for this disbursement
@@ -147,7 +150,7 @@ def WriteData(wb, data, date_from, date_to):
         for cell in ws[ws.max_row]:
             cell.border = thin_border
             col_letter = get_column_letter(cell.column)
-            if col_letter in ("A", "B", "C"):
+            if col_letter in ("A", "B", "C", "I"):
                 cell.alignment = Alignment(horizontal="center", vertical="top")
             elif col_letter in ("D", "E"):
                 cell.alignment = Alignment(horizontal="left", vertical="top")
@@ -187,10 +190,10 @@ def WriteData(wb, data, date_from, date_to):
     # --- Set column widths ---
     col_widths = {
         "Date": 12,
-        "No.": 10,
-        "Invoice Number": 15,
+        "CD No.": 10,
+        "AP No.": 10,
         "Vendor": 30,
-        "Particulars": 25
+        "Particulars": 25,
     }
 
     for i, col_name in enumerate(header, start=1):
