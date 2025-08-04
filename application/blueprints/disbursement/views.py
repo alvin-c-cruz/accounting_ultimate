@@ -5,8 +5,6 @@ from sqlalchemy.exc import IntegrityError
 from .models import Disbursement as Obj
 from .models import DisbursementDetail as ObjDetail
 from .forms import Form
-from .. account import Account
-from .. vendor import Vendor
 from application.extensions import db, month_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
 from .. user import login_required, roles_accepted
@@ -132,9 +130,6 @@ def edit(record_id):
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
 def view(record_id):   
-    vendor_dropdown = [{"id": vendor.id, "vendor_name": vendor.vendor_name} for vendor in Vendor.query.order_by('vendor_name').all()]
-    account_dropdown = [{"id": account.id, "account_name": account.account_name} for account in Account.query.order_by('account_number').all()]
-
     record = Obj.query.get_or_404(record_id)
 
     if request.method == "POST":
@@ -145,8 +140,6 @@ def view(record_id):
 
     context = {
         "form": form,
-        "vendor_dropdown": vendor_dropdown,
-        "account_dropdown": account_dropdown,
     }
 
     return render_template(f"{app_name}/form.html", **context)
