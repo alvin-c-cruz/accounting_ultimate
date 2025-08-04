@@ -85,7 +85,7 @@
                     {% if not form.cancelled and form.id %}
                     <a href="{{ url_for('disbursement.cancel', record_id=form.id) }}"
                        class="btn btn-danger form-control"
-                       onclick="return confirmMessage('Type YES to cancel this record.');">Cancel Order</a>
+                       onclick="return confirmMessage('Type YES to cancel this record.');">Cancel</a>
                     {% endif %}
                 </div>
             </div>
