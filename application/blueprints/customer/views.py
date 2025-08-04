@@ -1,17 +1,17 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, Response, current_app, send_file
-from io import BytesIO
+from flask import Blueprint, render_template, request, redirect, url_for, flash, Response, send_file, current_app
+import os
 import json
+import openpyxl
+from io import BytesIO
+from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
-from .models import Account as Obj
-from .models import ObjUser as Preparer
+from .models import Customer as Obj
 from .models import ObjAdmin as Approver
+from .models import ObjUser as Preparer
 from .forms import Form
 from application.extensions import db
 from application.blueprints.user import login_required, roles_accepted
 from flask_login import current_user
-import openpyxl
-from werkzeug.utils import secure_filename
-import os
 
 from . import app_name, app_label
 
@@ -24,7 +24,7 @@ ROLES_ACCEPTED = app_label
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
 def home():
-    rows = Obj.query.order_by(getattr(Obj, f"account_number")).all()
+    rows = Obj.query.order_by(getattr(Obj, f"{app_name}_name")).all()
 
     context = {
         "rows": rows
@@ -43,8 +43,7 @@ def add():
 
         if form._validate_on_submit():
             form._save()
-            flash(f"{form.account_title} has been saved.")
-            return redirect(url_for(f'{app_name}.add'))
+            return redirect(url_for(f'{app_name}.home'))
     else:
         form = Form()
 
@@ -147,7 +146,7 @@ def unlock(record_id):
 @bp.route("/autocomplete", methods=['GET'])
 @login_required
 def _autocomplete():
-    options = [f"{i.account_number}: {i.account_title}" for i in Obj.query.order_by("account_number").all()]
+    options = [getattr(i,f"{app_name}_name") for i in Obj.query.order_by(getattr(Obj,f"{app_name}_name")).all()]
     return Response(json.dumps(options), mimetype='application/json')
 
 
@@ -177,7 +176,7 @@ def upload():
 
         imported = 0
         skipped = 0
-
+        
         title = sheet.title
         cell_customer_name = sheet["A1"]
         cell_tin = sheet["A2"]
@@ -186,31 +185,31 @@ def upload():
         checker = (title, cell_customer_name, cell_tin, cell_address)
         if checker == ("Customer", "Customer Name", "TIN", "Address"):
             for row in sheet.iter_rows(min_row=2, values_only=True):
-                account_number, account_title, account_description = row[:3]
+                customer_name, tin, address = row[:3]
 
-                if not account_number or not account_title:
+                if not customer_name:
                     continue
 
                 existing = Obj.query.filter(
-                    (Obj.account_number == str(account_number)) |
-                    (Obj.account_title == str(account_title))
+                    (Obj.customer_name == str(customer_name)) |
+                    (Obj.tin == str(tin))
                 ).first()
 
                 if existing:
                     skipped += 1
                     continue
 
-                account = Obj(
-                    account_number=str(account_number).upper(),
-                    account_title=str(account_title).upper(),
-                    account_description=str(account_description or "").upper()
+                customer = Obj(
+                    customer_name=str(customer_name).upper(),
+                    tin=str(tin or "").upper(),
+                    address=str(address or "").upper()
                 )
 
-                db.session.add(account)
+                db.session.add(customer)
                 db.session.commit()
 
                 preparer_data = {
-                    f"{app_name}_id": account.id,
+                    f"{app_name}_id": customer.id,
                     "user_id": current_user.id
                 }
                 preparer = Preparer(**preparer_data)
@@ -218,7 +217,6 @@ def upload():
                 db.session.commit()
 
                 imported += 1
-
             flash(f"{imported} record(s) imported successfully. {skipped} skipped due to duplicates.", "success")
         else:
             flash(f"Error processing file: Invalid format.", "danger")
@@ -235,13 +233,10 @@ def upload():
 def download_template():
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Chart of Accounts"
+    ws.title = "Customers"
 
     # Header row
-    ws.append(["Account Number", "Account Title", "Description"])
-
-    # Optionally, add sample data
-    # ws.append(["101", "Cash", "Cash on hand"])
+    ws.append(["Customer Name", "TIN", "Address"])
 
     # Save workbook to memory
     file_stream = BytesIO()
@@ -251,6 +246,6 @@ def download_template():
     return send_file(
         file_stream,
         as_attachment=True,
-        download_name="account.xlsx",
+        download_name="customer.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )

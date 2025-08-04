@@ -3,5 +3,6 @@ from . import user
 
 from . import account
 from . import vendor
+from . import customer
 
 from . import disbursement

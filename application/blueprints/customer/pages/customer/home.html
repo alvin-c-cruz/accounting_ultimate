@@ -1,60 +1,60 @@
 {% extends "base.html" %}
 {% from "macros_button.html" import edit_button, delete_button, approve_button, unlock_button %}
 
-{% block title %}Account{% endblock %}
+{% block title %}Customer{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Chart of Accounts</h1>
+    <h1 class="mb-4">Customer</h1>
 
     <!-- Add Button -->
     <div class="mb-3 d-flex justify-content-between align-items-center">
-        <a href="{{ url_for('account.add') }}" class="btn btn-outline-success">Add Account</a>
+        <a href="{{ url_for('customer.add') }}" class="btn btn-outline-success">Add Customer</a>
 
         <div class="d-flex gap-2">
-    <form method="POST" action="{{ url_for('account.upload') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('customer.upload') }}" enctype="multipart/form-data">
         <div class="input-group">
             <input type="file" name="xlsx_file" accept=".xlsx" class="form-control" required>
             <button type="submit" class="btn btn-outline-primary">Upload Excel</button>
         </div>
     </form>
 
-    <a href="{{ url_for('account.download_template') }}" class="btn btn-outline-secondary">Download Template</a>
+    <a href="{{ url_for('customer.download_template') }}" class="btn btn-outline-secondary">Download Template</a>
 </div>
 
 
     </div>
 
-    <!-- Account Table -->
+    <!-- Customer Table -->
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle table-striped">
+                <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col">Account Number</th>
-                            <th scope="col">Account Title</th>
-                            <th scope="col">Description</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">TIN</th>
+                            <th scope="col">Address</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in rows %}
                         <tr>
-                            <td aria-label="Account Number">{{ row.account_number }}</td>
-                            <td aria-label="Account Title">{{ row.account_title }}</td>
-                            <td aria-label="Description">{{ row.account_description }}</td>
+                            <td aria-label="Name">{{ row.customer_name }}</td>
+                            <td aria-label="TIN">{{ row.tin }}</td>
+                            <td aria-label="Address">{{ row.address }}</td>
                             <td>
                                 {% if not row.approved %}
-                                    {{ edit_button(url_for('account.edit', record_id=row.id)) }}
-                                    {{ delete_button(url_for('account.delete', record_id=row.id)) }}
+                                    {{ edit_button(url_for('customer.edit', record_id=row.id)) }}
+                                    {{ delete_button(url_for('customer.delete', record_id=row.id)) }}
                                     {% if current_user.admin %}
-                                        {{ approve_button(url_for('account.approve', record_id=row.id)) }}
+                                        {{ approve_button(url_for('customer.approve', record_id=row.id)) }}
                                     {% endif %}
                                 {% else %}
                                     <span class="text-muted">Approved — editing locked.</span>
                                     {% if current_user.admin %}
-                                        {{ unlock_button(url_for('account.unlock', record_id=row.id)) }}
+                                        {{ unlock_button(url_for('customer.unlock', record_id=row.id)) }}
                                     {% endif %}
                                 {% endif %}
                             </td>
@@ -62,7 +62,7 @@
                         {% else %}
                         <tr>
                             <td colspan="4" class="text-center text-muted py-4">
-                                No accounts found. Click "Add Account" to create one.
+                                No accounts found. Click "Add Customer" to create one.
                             </td>
                         </tr>
                         {% endfor %}
