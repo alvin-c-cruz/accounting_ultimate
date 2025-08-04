@@ -1,0 +1,16 @@
+            {% if ("Sales" in current_user.user_roles) %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sales
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if "Sales" in current_user.user_roles %}    
+                <li><a class="dropdown-item" href="{{ url_for('sales.home') }}">Sales Journal</a></li>
+                {% endif %}
+                {% if "Sales" in current_user.user_roles %}    
+                <li><a class="dropdown-item" href="{{ url_for('sales.add') }}">Add Sales</a></li>
+                {% endif %}
+              </ul>
+            </li>
+            {% endif %}
+

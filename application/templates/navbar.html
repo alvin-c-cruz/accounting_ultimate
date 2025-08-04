@@ -9,6 +9,8 @@
 
           {% if current_user.is_active %}
           
+            {% include "sales/navbar.html" %}
+
             <!-- Disbursement Menu -->
             {% if ("Disbursement" in current_user.user_roles) %}
             <li class="nav-item dropdown">

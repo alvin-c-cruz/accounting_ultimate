@@ -179,12 +179,12 @@ def upload():
         skipped = 0
 
         title = sheet.title
-        cell_customer_name = sheet["A1"]
-        cell_tin = sheet["A2"]
-        cell_address = sheet["A3"]
+        cell_account_number = sheet["A1"].value
+        cell_account_title = sheet["B1"].value
+        cell_address = sheet["C1"].value
         
-        checker = (title, cell_customer_name, cell_tin, cell_address)
-        if checker == ("Customer", "Customer Name", "TIN", "Address"):
+        checker = (title, cell_account_number, cell_account_title, cell_address)
+        if checker == ("Chart of Accounts", "Account Number", "Account Title", "Description"):
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 account_number, account_title, account_description = row[:3]
 
