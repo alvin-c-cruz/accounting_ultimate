@@ -57,9 +57,6 @@ def home():
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
 def add():
-    vendor_dropdown = [{"id": vendor.id, "vendor_name": vendor.vendor_name} for vendor in Vendor.query.order_by('vendor_name').all()]
-    account_dropdown = [{"id": account.id, "account_name": account.account_name} for account in Account.query.order_by('account_number').all()]
-    
     if request.method == "POST":
         form = Form()
         form._post(request.form)
@@ -89,8 +86,6 @@ def add():
 
     context = {
         "form": form,
-        "vendor_dropdown": vendor_dropdown,
-        "account_dropdown": account_dropdown,
 
     }
 
