@@ -32,12 +32,16 @@ def home():
         Obj.record_date, Obj.id
     ).all()
 
-    # Collect all account titles that appear in the disbursement details
-    account_titles = sorted({
-        detail.account.account_title
+    # Collect all unique Account objects from the disbursement details
+    accounts = {
+        detail.account
         for row in rows
         for detail in row.disbursement_details
-    })
+    }
+
+    # Sort accounts by account_number
+    account_titles = sorted(accounts, key=lambda acc: acc.account_number)
+    account_titles = [acc.account_title for acc in account_titles]
 
     context = {
         "rows": rows, 
