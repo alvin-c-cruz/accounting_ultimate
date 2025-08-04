@@ -98,9 +98,9 @@
                     {% for title in account_titles %}
                         {% set matched = row.disbursement_details | selectattr("account.account_title", "equalto", title) | list %}
                         {% if matched %}
-                            {% set amount = matched[0].credit - matched[0].debit %}
+                            {% set amount = matched[0].debit - matched[0].credit %}
                             <td style="text-align: right;">
-                                {{ "{:,.2f}".format(amount | abs | float if amount else "") }}
+                                {{ "{:,.2f}".format(amount | float if amount else "") }}
                                 {% set _ = totals.update({title: totals[title] + amount}) %}
                             </td>
                         {% else %}

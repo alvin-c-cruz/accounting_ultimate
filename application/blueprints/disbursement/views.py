@@ -17,55 +17,6 @@ bp = Blueprint(app_name, __name__, template_folder="pages", url_prefix=f"/{app_n
 ROLES_ACCEPTED = app_label
 
 
-@bp.route("/journal", methods=["POST", "GET"])
-@login_required
-@roles_accepted([ROLES_ACCEPTED])
-def journal():
-    if request.method == "POST":
-        date_from = request.form.get("date_from")
-        date_to = request.form.get("date_to")
-
-        # Validate the dates before running the query
-        try:
-            df = datetime.strptime(date_from, "%Y-%m-%d")
-            dt = datetime.strptime(date_to, "%Y-%m-%d")
-
-            if df > dt:
-                flash("⚠️ 'Date From' cannot be after 'Date To'.", "danger")
-                return redirect(url_for(f"{app_name}.journal"))
-
-            # Proceed only if valid
-            records = Obj.query.filter(
-                Obj.record_date.between(date_from, date_to)
-            ).order_by(
-                Obj.record_number,
-            ).all()
-
-            rows = create_journal(records)
-
-        except ValueError:
-            flash("❌ Invalid date format.", "danger")
-            return redirect(url_for(f"{app_name}.journal"))
-
-    else:
-        date_from = month_first_day()
-        date_to = month_last_day()
-        records = Obj.query.filter(
-            Obj.record_date.between(date_from, date_to)
-        ).order_by(
-             Obj.record_number,
-        ).all()
-        rows = create_journal(records)
-
-    context = {
-        "rows": rows,
-        "date_from": date_from,
-        "date_to": date_to,
-    }
-
-    return render_template(f"{app_name}/journal.html", **context)
-
-
 @bp.route("/", methods=["GET", "POST"])
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
