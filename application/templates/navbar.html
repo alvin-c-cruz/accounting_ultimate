@@ -10,6 +10,7 @@
           {% if current_user.is_active %}
           
             {% include "sales/navbar.html" %}
+            {% include "receipt/navbar.html" %}
 
             <!-- Disbursement Menu -->
             {% if ("Disbursement" in current_user.user_roles) %}

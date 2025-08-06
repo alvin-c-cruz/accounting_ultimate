@@ -1,0 +1,16 @@
+            {% if ("Receipt" in current_user.user_roles) %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Receipt
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if "Receipt" in current_user.user_roles %}    
+                <li><a class="dropdown-item" href="{{ url_for('receipt.home') }}">Cash Receipt Journal</a></li>
+                {% endif %}
+                {% if "Receipt" in current_user.user_roles %}    
+                <li><a class="dropdown-item" href="{{ url_for('receipt.add') }}">Add Receipt</a></li>
+                {% endif %}
+              </ul>
+            </li>
+            {% endif %}
+
