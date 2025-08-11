@@ -148,7 +148,7 @@ class Form:
                 if detail._is_dirty():
                     _dict = get_attributes_as_dict(detail)
                     _dict.pop("id")
-                    _dict.pop("customer_name")
+                    _dict.pop("account_name")
                     _dict[f"{app_name}_id"] = new_record.id
                     new_detail = ObjDetail(**_dict)
                     db.session.add(new_detail)
