@@ -4,12 +4,24 @@ from application.extensions import db
 from sqlalchemy import extract
 
 from .. account import Account
+from .. receipt import Receipt, ReceiptDetail
 from .. sales import Sales, SalesDetail
 from .. disbursement import Disbursement, DisbursementDetail
 
 
 def get_account_balances_up_to(target_date_str):
     target_date = datetime.strptime(target_date_str, "%Y-%m-%d").date()
+
+    # Sum from ReceiptDetail
+    receipt_query = (
+        db.session.query(
+            ReceiptDetail.account_id,
+            func.sum(ReceiptDetail.debit - ReceiptDetail.credit).label('balance')
+        )
+        .join(Receipt)
+        .filter(Receipt.record_date <= target_date_str)
+        .group_by(ReceiptDetail.account_id)
+    ).all()
 
     # Sum from SalesDetail
     sales_query = (
@@ -37,6 +49,10 @@ def get_account_balances_up_to(target_date_str):
     account_totals = {}
 
     # Combine sales results
+    for account_id, balance in receipt_query:
+        account_totals[account_id] = account_totals.get(account_id, 0) + (balance or 0)
+
+    # Combine sales results
     for account_id, balance in sales_query:
         account_totals[account_id] = account_totals.get(account_id, 0) + (balance or 0)
 
@@ -57,6 +73,20 @@ def get_account_balances_up_to(target_date_str):
 def get_account_balances_in_range(start_date_str, end_date_str):
     start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
     end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
+    # ReceiptDetails within date range
+    receipt_query = (
+        db.session.query(
+            ReceiptDetail.account_id,
+            func.sum(ReceiptDetail.debit - ReceiptDetail.credit).label('balance')
+        )
+        .join(Receipt)
+        .filter(and_(
+            Receipt.record_date >= start_date_str,
+            Receipt.record_date <= end_date_str
+        ))
+        .group_by(ReceiptDetail.account_id)
+    ).all()
 
     # SalesDetails within date range
     sales_query = (
@@ -88,6 +118,9 @@ def get_account_balances_in_range(start_date_str, end_date_str):
 
     # Merge balances from both queries
     account_totals = {}
+
+    for account_id, balance in receipt_query:
+        account_totals[account_id] = account_totals.get(account_id, 0) + (balance or 0)
 
     for account_id, balance in sales_query:
         account_totals[account_id] = account_totals.get(account_id, 0) + (balance or 0)
