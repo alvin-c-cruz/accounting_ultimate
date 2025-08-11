@@ -3,12 +3,16 @@
     <title>Print Preview: CD No. {{obj.record_number}}</title>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/voucher.css')}}">
     <style>
-        textarea {
+        pre {
             border: none;
             background-color: transparent;
             resize: none;
             overflow:hidden;
             outline: none;
+        }
+        * {
+            margin: 0;
+            padding: 0;
         }
     </style>
     {% if not obj.submitted %}
@@ -17,7 +21,7 @@
             color: red;
         }
 
-        textarea {
+        pre {
             color: red;
         }
     </style>
@@ -29,7 +33,6 @@
         <div class="flex-row justify-center">
             <h2>{{ g.company_name }}</h2>
         </div>
-
         <div class="flex-row justify-center">
             <div class="flex-1"></div>
             <div class="flex-row flex-1 justify-center">
@@ -87,7 +90,7 @@
             <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>DEBIT</strong></label>
             <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>CREDIT</strong></label>            
         </div>
-        <div class="flex-column height-300">
+        <div class="flex-column height-250">
         {% for entry in obj.disbursement_details %}
         <div class="flex-row justify-center">
             {% if entry.debit %}
@@ -107,7 +110,7 @@
     <footer class="flex-column">
         <div class="flex-column line-bordered border-bottom height-100">
             <span class="margin-left-10">P A R T I C U L A R S:</span>
-            <textarea class="margin-left-50 margin-right-10" cols="30" rows="4">{{obj.description}}</textarea>
+            <pre class="margin-left-50 margin-right-10" cols="30" rows="4">{{obj.description}}</pre>
         </div>
         <div class="flex-column">
             <div class="flex-row justify-center">
