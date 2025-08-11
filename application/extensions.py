@@ -60,6 +60,9 @@ def month_last_day():
     return last_day
 
 
+import re
+from datetime import datetime
+
 def next_control_number(obj, control_number_field, record_date=None):
     record = obj.query.order_by(getattr(obj, control_number_field).desc()).first()
     
@@ -67,13 +70,28 @@ def next_control_number(obj, control_number_field, record_date=None):
         return "00001"
 
     last_number = getattr(record, control_number_field)
-    
-    length = len(last_number)
-    suffix = int(last_number) + 1
-    string_format = '{:0' + str(length) + 'd}'
-    suffix = string_format.format(suffix)
 
-    return suffix
+    # Check if last character is a letter
+    if last_number[-1].isalpha():
+        return f"{last_number}-001"
+
+    # Match and split by last numeric sequence
+    match = re.search(r'(\d+)$', last_number)
+    if match:
+        num_str = match.group(1)
+        prefix = last_number[:-len(num_str)]
+        num_len = len(num_str)
+        new_num = int(num_str) + 1
+        return f"{prefix}{str(new_num).zfill(num_len)}"
+
+    # Fallback: treat as pure number
+    try:
+        num_len = len(last_number)
+        new_num = int(last_number) + 1
+        return str(new_num).zfill(num_len)
+    except ValueError:
+        # If it’s not a number at all, start from -001
+        return f"{last_number}-001"
 
 
 def long_date(str_date):
