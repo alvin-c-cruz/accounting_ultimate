@@ -79,10 +79,16 @@ class Form:
             record = Obj.query.get(self.id)
             if record:
                 data = {
-                f"{app_name}_id": self.id
-            }
+                    f"{app_name}_id": self.id
+                }
+                
                 preparer = Preparer.query.filter_by(**data).first()
-                preparer.user_id = self.user_prepare_id
+                if preparer:
+                    preparer.user_id = self.user_prepare_id
+                else:
+                    data[f"user_id"] = self.user_prepare_id
+                    preparer = Preparer(**data)
+                    db.session.add(preparer)
 
                 for attribute in get_attributes(self):
                     if attribute == "id": continue
