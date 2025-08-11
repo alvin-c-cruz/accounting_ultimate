@@ -86,7 +86,7 @@ def delete(record_id):
     obj = Obj.query.get_or_404(record_id)
     preparer = obj.preparer
     try:
-        db.session.delete(preparer)
+        if preparer: db.session.delete(preparer)
         db.session.delete(obj)
         db.session.commit()
         flash(f"{obj} has been deleted.", category="success")

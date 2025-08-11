@@ -162,7 +162,7 @@ def delete(record_id):
     preparer = obj.preparer
 
     try:
-        db.session.delete(preparer)
+        if preparer: db.session.delete(preparer)
         for detail in details:
             db.session.delete(detail)
         db.session.delete(obj)

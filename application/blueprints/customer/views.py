@@ -85,7 +85,7 @@ def delete(record_id):
     obj = Obj.query.get_or_404(record_id)
     preparer = obj.preparer
     try:
-        db.session.delete(preparer)
+        if preparer:  db.session.delete(preparer)
         db.session.delete(obj)
         db.session.commit()
         flash(f"{obj} has been deleted.", category="success")
@@ -182,7 +182,7 @@ def upload():
         cell_tin = sheet["B1"].value
         cell_address = sheet["C1"].value        
         checker = (title, cell_customer_name, cell_tin, cell_address)
-        print(checker)
+        
         if checker == ("Customers", "Customer Name", "TIN", "Address"):
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 customer_name, tin, address = row[:3]
