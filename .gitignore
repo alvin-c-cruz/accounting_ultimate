@@ -1,3 +1,6 @@
+# user defined print layout
+application/blueprints/disbursement/pages/disbursement/print.html
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
