@@ -1,5 +1,5 @@
 app_name = "receipt"
-app_label = "Receipts"
+app_label = "Receipt"
 menu_label = (app_name, f"/{app_name}", app_label)
 
 

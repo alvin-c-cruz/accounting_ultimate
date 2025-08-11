@@ -20,6 +20,7 @@ class Receipt(db.Model):
 
     submitted = db.Column(db.String())
     cancelled = db.Column(db.String())
+    cancelled = db.Column(db.String())
 
     @property
     def preparer(self):
@@ -36,7 +37,7 @@ class Receipt(db.Model):
         return short_date(self.record_date) if self.record_date else None
 
     @property
-    def formatted_record_date_long(self):
+    def formatted_record_date_dr(self):
         return long_date(self.record_date) if self.record_date else None
 
     @property
