@@ -5,11 +5,11 @@ from sqlalchemy.exc import IntegrityError
 from .models import Sales as Obj
 from .models import SalesDetail as ObjDetail
 from .forms import Form
-from .. account import Account
-from .. customer import Customer
+from ... account import Account
+from ... customer import Customer
 from application.extensions import db, month_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
-from .. user import login_required, roles_accepted
+from ... user import login_required, roles_accepted
 from . import app_name, app_label
 
 

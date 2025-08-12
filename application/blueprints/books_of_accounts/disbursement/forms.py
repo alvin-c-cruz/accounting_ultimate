@@ -7,8 +7,8 @@ from .admin_models import UserDisbursement as Preparer
 from datetime import datetime
 from . import app_name
 
-from .. account import Account
-from .. vendor import Vendor
+from ... account import Account
+from ... vendor import Vendor
 
 
 DETAIL_ROWS = 20

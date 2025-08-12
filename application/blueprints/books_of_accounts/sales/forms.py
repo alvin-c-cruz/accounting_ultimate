@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from sqlalchemy import func
 from application.extensions import db
-from .models import Receipt as Obj
-from .models import ReceiptDetail as ObjDetail
-from .admin_models import UserReceipt as Preparer
+from .models import Sales as Obj
+from .models import SalesDetail as ObjDetail
+from .admin_models import UserSales as Preparer
 from datetime import datetime
 from . import app_name
 
-from .. account import Account
-from .. customer import Customer
+from ... account import Account
+from ... customer import Customer
 
 
 DETAIL_ROWS = 20
@@ -44,7 +44,7 @@ def get_attributes_as_dict(object):
 @dataclass
 class SubForm:
     id: int = 0
-    receipt_id:int = 0
+    sales_id:int = 0
     account_id: int = 0
     debit: float = 0
     credit: float = 0
@@ -107,7 +107,7 @@ class Form:
     record_date: str = ""
     record_number: str = ""
     customer_id: int = 0
-    invoice_number: str = ""
+    dr_number: str = ""
     prepared_by: str = ""
     checked_by: str = ""
     approved_by: str = ""
@@ -270,14 +270,14 @@ class Form:
             self.errors["record_date"] = "Please type date."
 
         if not self.record_number:
-            self.errors["record_number"] = "Please type receipt number."
+            self.errors["record_number"] = "Please type sales invoice number."
         else:
             duplicate = Obj.query.filter(
                 func.lower(Obj.record_number) == func.lower(self.record_number), 
                 Obj.id != self.id
             ).first()
             if duplicate:
-                self.errors["record_number"] = "Receipt number is already used, please verify."        
+                self.errors["record_number"] = "Sales invoice number is already used, please verify."        
 
         if not self.customer_name:
             self.errors["customer_name"] = "Please type customer."

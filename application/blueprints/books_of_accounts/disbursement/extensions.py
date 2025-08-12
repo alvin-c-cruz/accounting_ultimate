@@ -7,14 +7,14 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
-from .models import Sales, SalesDetail
-from .. customer import Customer  # adjust path as needed
+from .models import Disbursement, DisbursementDetail
+from ... vendor import Vendor  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
 from openpyxl.utils import get_column_letter
 
 # from .. account_type import AccountType
-from .. account import Account
+from ... account import Account
 
 from . import app_name, app_label
 
@@ -27,25 +27,25 @@ double_rule_border = Border(bottom=Side(style='double'))
 
 ALIGNMENT = {
                 "Date": Alignment(horizontal="center", vertical="top"),
-                "SI No.": Alignment(horizontal="center", vertical="top"),
-                "DR No.": Alignment(horizontal="center", vertical="top"),
-                "Customer": Alignment(horizontal="left", vertical="top", wrap_text=True),
+                "CD No.": Alignment(horizontal="center", vertical="top"),
+                "AP No.": Alignment(horizontal="center", vertical="top"),
+                "Vendor": Alignment(horizontal="left", vertical="top", wrap_text=True),
                 "Particulars": Alignment(horizontal="left", vertical="top", wrap_text=True),
             }
 
 NUMBER_FORMAT = {
                 "Date": "yyyy-mmm-dd",
-                "SI No.": "General",
-                "DR No.": "General",
-                "Customer": "General",
+                "CD No.": "General",
+                "AP No.": "General",
+                "Vendor": "General",
                 "Particulars": "General",
             }
 
 COLUMN_WIDTH = {
                 "Date": 12,
-                "SI No.": 10,
-                "DR No.": 12,
-                "Customer": 20,
+                "CD No.": 10,
+                "AP No.": 12,
+                "Vendor": 20,
                 "Particulars": 25,
             }
 
@@ -83,13 +83,13 @@ def WriteData(wb, data, date_from, date_to):
 
     # --- Determine all account titles to create dynamic columns ---
     account_names = set()
-    for sales in data:
-        for detail in sales.sales_details:
+    for disbursement in data:
+        for detail in disbursement.disbursement_details:
             if detail.account:
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "SI No.", "DR No.", "Customer", "Particulars"] + account_names
+    header = ["Date", "CD No.", "AP No.", "Vendor", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -101,29 +101,29 @@ def WriteData(wb, data, date_from, date_to):
     totals = defaultdict(Decimal)
 
     # --- Write data rows ---
-    for record in data:
-        if not record.cancelled:
+    for disbursement in data:
+        if not disbursement.cancelled:
             base_info = {
-                "date": record.record_date,
-                "no": record.record_number,
-                "dr": record.dr_number,
-                "customer": record.customer.customer_name if record.customer else "",
-                "desc": record.description,
+                "date": disbursement.record_date,
+                "no": disbursement.record_number,
+                "ap": disbursement.ap_number,
+                "vendor": disbursement.vendor.vendor_name if disbursement.vendor else "",
+                "desc": disbursement.description,
             }
         else:
             base_info = {
-                "date": record.record_date,
-                "no": record.record_number,
-                "dr": "",
-                "customer": "CANCELLED",
+                "date": disbursement.record_date,
+                "no": disbursement.record_number,
+                "ap": "",
+                "vendor": "CANCELLED",
                 "desc": "",
             }
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
-        for detail in record.sales_details:
+        for detail in disbursement.disbursement_details:
             name = detail.account.account_title if detail.account else ""
-            if not record.cancelled:
+            if not disbursement.cancelled:
                 row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
                 totals[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
             else:
@@ -134,8 +134,8 @@ def WriteData(wb, data, date_from, date_to):
         row = [
             base_info["date"],
             base_info["no"],
-            base_info["dr"],
-            base_info["customer"],
+            base_info["ap"],
+            base_info["vendor"],
             base_info["desc"],
         ]
 
@@ -190,9 +190,9 @@ def WriteData(wb, data, date_from, date_to):
     # --- Set column widths ---
     col_widths = {
         "Date": 12,
-        "SI No.": 10,
-        "DR No.": 10,
-        "Customer": 30,
+        "CD No.": 10,
+        "AP No.": 10,
+        "Vendor": 30,
         "Particulars": 25,
     }
 

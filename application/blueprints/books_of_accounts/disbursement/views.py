@@ -7,7 +7,7 @@ from .models import DisbursementDetail as ObjDetail
 from .forms import Form
 from application.extensions import db, month_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
-from .. user import login_required, roles_accepted
+from ... user import login_required, roles_accepted
 from . import app_name, app_label
 
 

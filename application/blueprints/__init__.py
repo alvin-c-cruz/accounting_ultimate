@@ -5,6 +5,7 @@ from . import account
 from . import vendor
 from . import customer
 
-from . import sales
-from . import receipt
-from . import disbursement
+from .books_of_accounts import sales
+from .books_of_accounts import receipt
+from .books_of_accounts import accounts_payable
+from .books_of_accounts import disbursement

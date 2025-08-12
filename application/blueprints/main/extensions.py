@@ -4,24 +4,36 @@ from application.extensions import db
 from sqlalchemy import extract
 
 from .. account import Account
-from .. receipt import Receipt, ReceiptDetail
-from .. sales import Sales, SalesDetail
-from .. disbursement import Disbursement, DisbursementDetail
+from .. books_of_accounts.receipt import Receipt, ReceiptDetail
+from .. books_of_accounts.sales import Sales, SalesDetail
+from .. books_of_accounts.disbursement import Disbursement, DisbursementDetail
+from .. books_of_accounts.accounts_payable import AccountsPayable, AccountsPayableDetail
 
 
 def get_account_balances_up_to(target_date_str):
     target_date = datetime.strptime(target_date_str, "%Y-%m-%d").date()
+    # Combine results into a dictionary
+    account_totals = {}
 
-    # Sum from ReceiptDetail
-    receipt_query = (
-        db.session.query(
-            ReceiptDetail.account_id,
-            func.sum(ReceiptDetail.debit - ReceiptDetail.credit).label('balance')
-        )
-        .join(Receipt)
-        .filter(Receipt.record_date <= target_date_str)
-        .group_by(ReceiptDetail.account_id)
-    ).all()
+    books = [
+        (Receipt, ReceiptDetail),
+    ]
+    
+    for Obj, ObjDetail in books:
+        # Sum from ReceiptDetail
+        query = (
+            db.session.query(
+                ObjDetail.account_id,
+                func.sum(ObjDetail.debit - ObjDetail.credit).label('balance')
+            )
+            .join(Obj)
+            .filter(Obj.record_date <= target_date_str)
+            .group_by(ObjDetail.account_id)
+        ).all()
+        
+        # Combine sales results
+        for account_id, balance in query:
+            account_totals[account_id] = account_totals.get(account_id, 0) + (balance or 0)
 
     # Sum from SalesDetail
     sales_query = (
@@ -45,12 +57,8 @@ def get_account_balances_up_to(target_date_str):
         .group_by(DisbursementDetail.account_id)
     ).all()
 
-    # Combine results into a dictionary
-    account_totals = {}
 
-    # Combine sales results
-    for account_id, balance in receipt_query:
-        account_totals[account_id] = account_totals.get(account_id, 0) + (balance or 0)
+
 
     # Combine sales results
     for account_id, balance in sales_query:

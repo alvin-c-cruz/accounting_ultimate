@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from sqlalchemy import func
 from application.extensions import db
-from .models import Sales as Obj
-from .models import SalesDetail as ObjDetail
-from .admin_models import UserSales as Preparer
+from .models import AccountsPayable as Obj
+from .models import AccountsPayableDetail as ObjDetail
+from .admin_models import UserAccountsPayable as Preparer
 from datetime import datetime
 from . import app_name
 
-from .. account import Account
-from .. customer import Customer
+from ... account import Account
+from ... vendor import Vendor
 
 
 DETAIL_ROWS = 20
@@ -44,7 +44,7 @@ def get_attributes_as_dict(object):
 @dataclass
 class SubForm:
     id: int = 0
-    sales_id:int = 0
+    accounts_payable_id:int = 0
     account_id: int = 0
     debit: float = 0
     credit: float = 0
@@ -106,8 +106,10 @@ class Form:
     id: int = None
     record_date: str = ""
     record_number: str = ""
-    customer_id: int = 0
-    dr_number: str = ""
+    vendor_id: int = 0
+    invoice_number: str = ""
+    rr_number: str = ""
+    po_number: str = ""
     prepared_by: str = ""
     checked_by: str = ""
     approved_by: str = ""
@@ -119,7 +121,7 @@ class Form:
 
     user_prepare_id: int = None
     
-    customer_name: str = ""
+    vendor_name: str = ""
 
     details = []
     errors = {}
@@ -134,7 +136,7 @@ class Form:
             # Add a new record
             _dict = get_attributes_as_dict(self)
             if "locked" in _dict: _dict.pop("locked")
-            _dict.pop("customer_name")
+            _dict.pop("vendor_name")
             
             new_record = Obj(
                 **_dict
@@ -203,11 +205,11 @@ class Form:
    
     def _populate(self, obj):
         for attribute in get_attributes(self):
-            if attribute in ["customer_id"]:
+            if attribute in ["vendor_id"]:
                 setattr(self, attribute, int(getattr(obj, attribute)))
-                customer = Customer.query.get(getattr(obj, attribute))
-                self.customer_name = customer.customer_name
-            elif attribute == "customer_name":
+                vendor = Vendor.query.get(getattr(obj, attribute))
+                self.vendor_name = vendor.vendor_name
+            elif attribute == "vendor_name":
                 pass
             elif attribute in ("debit", "credit"):
                 setattr(self, attribute, float(getattr(obj, attribute)))
@@ -225,14 +227,14 @@ class Form:
                 value = getattr(request_form, "get")("record_id")
                 if value:
                     setattr(self, "id", int(value))
-            elif attribute in ["customer_id"]:
-                customer_name = request_form.get('customer_name')
-                customer = Customer.query.filter_by(
-                    customer_name=customer_name
+            elif attribute in ["vendor_id"]:
+                vendor_name = request_form.get('vendor_name')
+                vendor = Vendor.query.filter_by(
+                    vendor_name=vendor_name
                     ).first()
-                if customer:
-                    setattr(self, attribute, customer.id)
-                self.customer_name = customer_name
+                if vendor:
+                    setattr(self, attribute, vendor.id)
+                self.vendor_name = vendor_name
 
             elif attribute in ("submitted", "cancelled"):
                 continue
@@ -270,21 +272,21 @@ class Form:
             self.errors["record_date"] = "Please type date."
 
         if not self.record_number:
-            self.errors["record_number"] = "Please type sales invoice number."
+            self.errors["record_number"] = "Please type accounts payable number."
         else:
             duplicate = Obj.query.filter(
                 func.lower(Obj.record_number) == func.lower(self.record_number), 
                 Obj.id != self.id
             ).first()
             if duplicate:
-                self.errors["record_number"] = "Sales invoice number is already used, please verify."        
+                self.errors["record_number"] = "AP number is already used, please verify."        
 
-        if not self.customer_name:
-            self.errors["customer_name"] = "Please type customer."
+        if not self.vendor_name:
+            self.errors["vendor_name"] = "Please type vendor."
         else:
-            customer = Customer.query.filter(Customer.customer_name == self.customer_name).first()
-            if not customer:
-                self.errors["customer_name"] = f"{self.customer_name} does not exist."
+            vendor = Vendor.query.filter(Vendor.vendor_name == self.vendor_name).first()
+            if not vendor:
+                self.errors["vendor_name"] = f"{self.vendor_name} does not exist."
 
         total_debit = 0
         total_credit = 0

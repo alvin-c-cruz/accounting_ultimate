@@ -7,14 +7,14 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
-from .models import Disbursement, DisbursementDetail
-from .. vendor import Vendor  # adjust path as needed
+from .models import AccountsPayable, AccountsPayableDetail
+from ... vendor import Vendor  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
 from openpyxl.utils import get_column_letter
 
 # from .. account_type import AccountType
-from .. account import Account
+from ... account import Account
 
 from . import app_name, app_label
 
@@ -27,24 +27,27 @@ double_rule_border = Border(bottom=Side(style='double'))
 
 ALIGNMENT = {
                 "Date": Alignment(horizontal="center", vertical="top"),
-                "CD No.": Alignment(horizontal="center", vertical="top"),
                 "AP No.": Alignment(horizontal="center", vertical="top"),
+                "RR No.": Alignment(horizontal="center", vertical="top"),
+                "PO No.": Alignment(horizontal="center", vertical="top"),
                 "Vendor": Alignment(horizontal="left", vertical="top", wrap_text=True),
                 "Particulars": Alignment(horizontal="left", vertical="top", wrap_text=True),
             }
 
 NUMBER_FORMAT = {
                 "Date": "yyyy-mmm-dd",
-                "CD No.": "General",
                 "AP No.": "General",
+                "RR No.": "General",
+                "PO No.": "General",
                 "Vendor": "General",
                 "Particulars": "General",
             }
 
 COLUMN_WIDTH = {
                 "Date": 12,
-                "CD No.": 10,
-                "AP No.": 12,
+                "AP No.": 10,
+                "RR No.": 12,
+                "PO No.": 12,
                 "Vendor": 20,
                 "Particulars": 25,
             }
@@ -83,13 +86,13 @@ def WriteData(wb, data, date_from, date_to):
 
     # --- Determine all account titles to create dynamic columns ---
     account_names = set()
-    for disbursement in data:
-        for detail in disbursement.disbursement_details:
+    for row in data:
+        for detail in row.accounts_payable_details:
             if detail.account:
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "CD No.", "AP No.", "Vendor", "Particulars"] + account_names
+    header = ["Date", "AP No.", "RR No.", "PO No.", "Vendor", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -101,29 +104,31 @@ def WriteData(wb, data, date_from, date_to):
     totals = defaultdict(Decimal)
 
     # --- Write data rows ---
-    for disbursement in data:
-        if not disbursement.cancelled:
+    for row in data:
+        if not row.cancelled:
             base_info = {
-                "date": disbursement.record_date,
-                "no": disbursement.record_number,
-                "ap": disbursement.ap_number,
-                "vendor": disbursement.vendor.vendor_name if disbursement.vendor else "",
-                "desc": disbursement.description,
+                "date": row.record_date,
+                "no": row.record_number,
+                "rr": row.rr_number,
+                "po": row.po_number,
+                "vendor": row.vendor.vendor_name if row.vendor else "",
+                "desc": row.description,
             }
         else:
             base_info = {
-                "date": disbursement.record_date,
-                "no": disbursement.record_number,
-                "ap": "",
+                "date": row.record_date,
+                "no": row.record_number,
+                "rr": "",
+                "po": "",
                 "vendor": "CANCELLED",
                 "desc": "",
             }
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
-        for detail in disbursement.disbursement_details:
+        for detail in row.accounts_payable_details:
             name = detail.account.account_title if detail.account else ""
-            if not disbursement.cancelled:
+            if not row.cancelled:
                 row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
                 totals[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
             else:
@@ -134,7 +139,8 @@ def WriteData(wb, data, date_from, date_to):
         row = [
             base_info["date"],
             base_info["no"],
-            base_info["ap"],
+            base_info["rr"],
+            base_info["po"],
             base_info["vendor"],
             base_info["desc"],
         ]
@@ -150,9 +156,9 @@ def WriteData(wb, data, date_from, date_to):
         for cell in ws[ws.max_row]:
             cell.border = thin_border
             col_letter = get_column_letter(cell.column)
-            if col_letter in ("A", "B", "C", "I"):
+            if col_letter in ("A", "B", "C", "D"):
                 cell.alignment = Alignment(horizontal="center", vertical="top")
-            elif col_letter in ("D", "E"):
+            elif col_letter in ("F", "G"):
                 cell.alignment = Alignment(horizontal="left", vertical="top")
             else:
                 cell.alignment = Alignment(horizontal="right", vertical="top")
@@ -190,8 +196,9 @@ def WriteData(wb, data, date_from, date_to):
     # --- Set column widths ---
     col_widths = {
         "Date": 12,
-        "CD No.": 10,
         "AP No.": 10,
+        "RR No.": 10,
+        "PO No.": 10,
         "Vendor": 30,
         "Particulars": 25,
     }

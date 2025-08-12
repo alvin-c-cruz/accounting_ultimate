@@ -7,14 +7,14 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
-from .models import Receipt, ReceiptDetail
-from .. customer import Customer  # adjust path as needed
+from .models import Sales, SalesDetail
+from ... customer import Customer  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
 from openpyxl.utils import get_column_letter
 
 # from .. account_type import AccountType
-from .. account import Account
+from ... account import Account
 
 from . import app_name, app_label
 
@@ -27,24 +27,24 @@ double_rule_border = Border(bottom=Side(style='double'))
 
 ALIGNMENT = {
                 "Date": Alignment(horizontal="center", vertical="top"),
-                "Receipt No.": Alignment(horizontal="center", vertical="top"),
-                "Invoice No.": Alignment(horizontal="center", vertical="top"),
+                "SI No.": Alignment(horizontal="center", vertical="top"),
+                "DR No.": Alignment(horizontal="center", vertical="top"),
                 "Customer": Alignment(horizontal="left", vertical="top", wrap_text=True),
                 "Particulars": Alignment(horizontal="left", vertical="top", wrap_text=True),
             }
 
 NUMBER_FORMAT = {
                 "Date": "yyyy-mmm-dd",
-                "Receipt No.": "General",
-                "Invoice No.": "General",
+                "SI No.": "General",
+                "DR No.": "General",
                 "Customer": "General",
                 "Particulars": "General",
             }
 
 COLUMN_WIDTH = {
                 "Date": 12,
-                "Receipt No.": 10,
-                "Invoice No.": 12,
+                "SI No.": 10,
+                "DR No.": 12,
                 "Customer": 20,
                 "Particulars": 25,
             }
@@ -83,13 +83,13 @@ def WriteData(wb, data, date_from, date_to):
 
     # --- Determine all account titles to create dynamic columns ---
     account_names = set()
-    for record in data:
-        for detail in record.receipt_details:
+    for sales in data:
+        for detail in sales.sales_details:
             if detail.account:
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "Receipt No.", "Invoice No.", "Customer", "Particulars"] + account_names
+    header = ["Date", "SI No.", "DR No.", "Customer", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -106,7 +106,7 @@ def WriteData(wb, data, date_from, date_to):
             base_info = {
                 "date": record.record_date,
                 "no": record.record_number,
-                "invoice": record.invoice_number,
+                "dr": record.dr_number,
                 "customer": record.customer.customer_name if record.customer else "",
                 "desc": record.description,
             }
@@ -114,14 +114,14 @@ def WriteData(wb, data, date_from, date_to):
             base_info = {
                 "date": record.record_date,
                 "no": record.record_number,
-                "invoice": "",
+                "dr": "",
                 "customer": "CANCELLED",
                 "desc": "",
             }
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
-        for detail in record.receipt_details:
+        for detail in record.sales_details:
             name = detail.account.account_title if detail.account else ""
             if not record.cancelled:
                 row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
@@ -134,7 +134,7 @@ def WriteData(wb, data, date_from, date_to):
         row = [
             base_info["date"],
             base_info["no"],
-            base_info["invoice"],
+            base_info["dr"],
             base_info["customer"],
             base_info["desc"],
         ]
@@ -190,8 +190,8 @@ def WriteData(wb, data, date_from, date_to):
     # --- Set column widths ---
     col_widths = {
         "Date": 12,
-        "Receipt No.": 10,
-        "Invoice No.": 10,
+        "SI No.": 10,
+        "DR No.": 10,
         "Customer": 30,
         "Particulars": 25,
     }
@@ -199,4 +199,3 @@ def WriteData(wb, data, date_from, date_to):
     for i, col_name in enumerate(header, start=1):
         width = col_widths.get(col_name, 15)
         ws.column_dimensions[get_column_letter(i)].width = width
-    

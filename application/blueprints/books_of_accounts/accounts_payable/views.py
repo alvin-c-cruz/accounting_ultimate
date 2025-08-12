@@ -2,14 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import current_user
 import datetime
 from sqlalchemy.exc import IntegrityError
-from .models import Receipt as Obj
-from .models import ReceiptDetail as ObjDetail
+from .models import AccountsPayable as Obj
+from .models import AccountsPayableDetail as ObjDetail
 from .forms import Form
-from .. account import Account
-from .. customer import Customer
 from application.extensions import db, month_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
-from .. user import login_required, roles_accepted
+from ... user import login_required, roles_accepted
 from . import app_name, app_label
 
 
@@ -34,17 +32,16 @@ def home():
         Obj.record_date, Obj.id
     ).all()
 
-    # Collect all unique Account objects from the sales details
+    # Collect all unique Account objects from the disbursement details
     accounts = {
         detail.account
         for row in rows
-        for detail in row.receipt_details
+        for detail in row.accounts_payable_details
     }
 
     # Sort accounts by account_number
     account_titles = sorted(accounts, key=lambda acc: acc.account_number)
     account_titles = [acc.account_title for acc in account_titles]
-
 
     context = {
         "rows": rows, 
