@@ -6,7 +6,7 @@ from .models import Receipt as Obj
 from .models import ReceiptDetail as ObjDetail
 from .forms import Form
 from ... account import Account
-from ... customer import Customer
+from ... register.customer import Customer
 from application.extensions import db, month_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
 from ... user import login_required, roles_accepted

@@ -8,7 +8,7 @@ from datetime import datetime
 from . import app_name
 
 from ... account import Account
-from ... vendor import Vendor
+from ... register.vendor import Vendor
 
 
 DETAIL_ROWS = 20

@@ -8,7 +8,7 @@ from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
 from .models import Sales, SalesDetail
-from ... customer import Customer  # adjust path as needed
+from ... register.customer import Customer  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
 from openpyxl.utils import get_column_letter
