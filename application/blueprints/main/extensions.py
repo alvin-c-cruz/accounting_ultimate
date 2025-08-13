@@ -8,6 +8,7 @@ from .. books_of_accounts.receipt import Receipt, ReceiptDetail
 from .. books_of_accounts.sales import Sales, SalesDetail
 from .. books_of_accounts.disbursement import Disbursement, DisbursementDetail
 from .. books_of_accounts.accounts_payable import AccountsPayable, AccountsPayableDetail
+from .. books_of_accounts.general import General, GeneralDetail
 
 
 books = [
@@ -15,6 +16,7 @@ books = [
     (Sales, SalesDetail),
     (Disbursement, DisbursementDetail),
     (AccountsPayable, AccountsPayableDetail),
+    (General, GeneralDetail),
 ]
     
 

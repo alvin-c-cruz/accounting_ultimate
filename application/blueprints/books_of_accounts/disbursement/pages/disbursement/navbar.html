@@ -1,0 +1,16 @@
+            {% if ("Disbursement" in current_user.user_roles) %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Disbursement
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if "Disbursement" in current_user.user_roles %}    
+                <li><a class="dropdown-item" href="{{ url_for('disbursement.home') }}">Disbursement Journal</a></li>
+                {% endif %}
+                {% if "Disbursement" in current_user.user_roles %}    
+                <li><a class="dropdown-item" href="{{ url_for('disbursement.add') }}">Add Disbursement Voucher</a></li>
+                {% endif %}
+              </ul>
+            </li>
+            {% endif %}
+

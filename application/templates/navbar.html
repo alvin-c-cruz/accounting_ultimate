@@ -12,41 +12,12 @@
             {% include "sales/navbar.html" %}
             {% include "receipt/navbar.html" %}
             {% include "accounts_payable/navbar.html" %}
+            {% include "disbursement/navbar.html" %}
+            {% include "general/navbar.html" %}
 
-            <!-- Disbursement Menu -->
-            {% if ("Disbursement" in current_user.user_roles) %}
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Disbursement
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                {% if "Disbursement" in current_user.user_roles %}    
-                <li><a class="dropdown-item" href="{{ url_for('disbursement.home') }}">Disbursement List</a></li>
-                {% endif %}
-                {% if "Disbursement" in current_user.user_roles %}    
-                <li><a class="dropdown-item" href="{{ url_for('disbursement.add') }}">Add Disbursement</a></li>
-                {% endif %}
-              </ul>
-            </li>
-            {% endif %}
-            <!-- End of Disbursement Menu -->
           
             {% include "customer/navbar.html" %}
-
-            <!-- Vendor Menu -->
-            {% if ("Vendor" in current_user.user_roles) %}
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Vendor
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                {% if "Vendor" in current_user.user_roles %}    
-                <li><a class="dropdown-item" href="{{ url_for('vendor.home') }}">Vendor List</a></li>
-                {% endif %}
-              </ul>
-            </li>
-            {% endif %}
-            <!-- End of Vendor Menu -->
+            {% include "vendor/navbar.html" %}
 
             {% include "account/navbar.html" %}
 
