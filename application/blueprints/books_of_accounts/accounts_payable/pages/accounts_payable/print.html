@@ -94,9 +94,9 @@
         {% for entry in obj.accounts_payable_details %}
         <div class="flex-row justify-center">
             {% if entry.debit %}
-            <label class="flex-row flex-4 justify-start"><span class="margin-left-10">{{entry.account.account_title}}</span></label>
+            <label class="flex-row flex-4 justify-start"><span class="margin-left-10">{{entry.account.account_title}} {% if entry.side_note %}({{ entry.side_note }}){% endif %}</span></label>
             {% else %}
-            <label class="flex-row flex-4 justify-start"><span class="margin-left-50">{{entry.account.account_title}}</span></label>
+            <label class="flex-row flex-4 justify-start"><span class="margin-left-50">{{entry.account.account_title}} {% if entry.side_note %}({{ entry.side_note }}){% endif %}</span></label>
             {% endif %}
             <label class="flex-row flex-1 justify-end"><span class="margin-right-10">{% if entry.debit %}{{entry.formatted_debit}}{% endif %}</span></label>
             <label class="flex-row flex-1 justify-end"><span class="margin-right-10">{% if entry.credit %}{{entry.formatted_credit}}{% endif %}</span></label>     
