@@ -41,7 +41,7 @@
         <table class="table table-bordered table-striped text-nowrap">
             <thead>
                 <tr>
-                <td colspan="{{ 5 + account_titles|length }}" class="border-0 text-left">
+                <td colspan="{{ 7 + account_titles|length }}" class="border-0 text-left">
                     <h5 class="mb-0">{{ app_name.upper() }} JOURNAL</h5>
                     <small>FROM {{ date_from }} TO {{ date_to }}</small>
                 </td>
@@ -97,12 +97,21 @@
                             </td>
                     <td>{{ row.formatted_record_date }}</td>
                     <td>{{ row.record_number }}</td>
+                {% if row.cancelled %}
+                    <td></td>
+                    <td></td>
+                    <td>CANCELLED</td>
+                    <td></td>
+                    {% for title in account_titles %}
+                    <td></td>
+                    {% endfor %}
+                {% else %}
                     <td>{{ row.rr_number }}</td>
                     <td>{{ row.po_number }}</td>
                     <td>{{ row.vendor.vendor_name }}</td>
                     <td>{{ row.description }}</td>
                     {% for title in account_titles %}
-                        {% set matched = row.disbursement_details | selectattr("account.account_title", "equalto", title) | list %}
+                        {% set matched = row.accounts_payable_details | selectattr("account.account_title", "equalto", title) | list %}
                         {% if matched %}
                             {% set amount = matched[0].debit - matched[0].credit %}
                             <td style="text-align: right;">
@@ -113,12 +122,13 @@
                             <td></td>
                         {% endif %}
                     {% endfor %}
+                {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr class="bg-light font-weight-bold text-right">
-                    <td colspan="7">TOTAL</td>
+                    <td colspan="8">TOTAL</td>
                     {% for title in account_titles %}
                     <td style="text-align: right;">
                         {{ "{:,.2f}".format(totals[title] | float) }}

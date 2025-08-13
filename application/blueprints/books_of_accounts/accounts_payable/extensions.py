@@ -53,6 +53,16 @@ COLUMN_WIDTH = {
             }
 
 
+COLUMNS_STYLE = {
+                "Date": 12,
+                "AP No.": 10,
+                "RR No.": 12,
+                "PO No.": 12,
+                "Vendor": 20,
+                "Particulars": 25,
+            }
+
+
 def create_journal(data, app, date_from, date_to):
     list_files = os.listdir(os.path.join(app.instance_path, "temp"))
     for file in list_files:
@@ -158,11 +168,10 @@ def WriteData(wb, data, date_from, date_to):
             col_letter = get_column_letter(cell.column)
             if col_letter in ("A", "B", "C", "D"):
                 cell.alignment = Alignment(horizontal="center", vertical="top")
-            elif col_letter in ("F", "G"):
+            elif col_letter in ("E", "F"):
                 cell.alignment = Alignment(horizontal="left", vertical="top")
             else:
                 cell.alignment = Alignment(horizontal="right", vertical="top")
-            if isinstance(cell.value, (int, float, Decimal)):
                 cell.number_format = '#,##0.00_ ;(#,##0.00)'
 
     # --- Append Totals ---
@@ -171,8 +180,8 @@ def WriteData(wb, data, date_from, date_to):
     data_end_row = ws.max_row
 
     # Start building the total row
-    total_row = [""] * 5  # Leave first 5 columns blank
-    for col_idx in range(6, 6 + len(account_names)):  # starting from column F (index 6)
+    total_row = [""] * 6  # Leave first 5 columns blank
+    for col_idx in range(7, 7 + len(account_names)):  # starting from column F (index 6)
         col_letter = get_column_letter(col_idx)
         formula = f"=SUM({col_letter}{data_start_row}:{col_letter}{data_end_row})"
         total_row.append(formula)

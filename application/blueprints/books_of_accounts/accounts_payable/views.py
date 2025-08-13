@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from .models import AccountsPayable as Obj
 from .models import AccountsPayableDetail as ObjDetail
 from .forms import Form
-from application.extensions import db, month_first_day, month_last_day, next_control_number 
+from application.extensions import db, year_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
 from ... user import login_required, roles_accepted
 from . import app_name, app_label
@@ -23,13 +23,13 @@ def home():
         date_from = request.form.get("date_from")
         date_to = request.form.get("date_to")
     else:
-        date_from = month_first_day()
+        date_from = year_first_day()
         date_to = month_last_day()
 
     rows = Obj.query.filter(
         Obj.record_date.between(date_from, date_to)
     ).order_by(
-        Obj.record_date, Obj.id
+        Obj.record_number.desc()
     ).all()
 
     # Collect all unique Account objects from the disbursement details
