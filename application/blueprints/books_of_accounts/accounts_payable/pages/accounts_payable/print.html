@@ -3,6 +3,9 @@
     <title>Print Preview: AP No. {{obj.record_number}}</title>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/voucher.css')}}">
     <style>
+        body {
+            font-family: Calibri, Arial, sans-serif;
+        }
         pre {
             border: none;
             background-color: transparent;
@@ -36,7 +39,7 @@
         <div class="flex-row justify-center">
             <div class="flex-1"></div>
             <div class="flex-row flex-1 justify-center">
-                <h4><u>ACCOUNTS PAYABLE VOUCHER</u></h4>
+                <h4>ACCOUNTS PAYABLE VOUCHER</h4>
             </div>            
             <div class="flex-row flex-1 justify-center">
                 <div class="flex-row justify-center align-center">
@@ -49,7 +52,7 @@
         <div class="flex-row justify-center">
             <div class="flex-row flex-3">
                 <div class="flex-row flex-1 align-center">
-                    <label>PAID TO: </label>                     
+                    <label>PAYABLE TO: </label>                     
                 </div>
                 <div class="flex-row flex-3 align-center border-bottom">
                     <span class="flex-shrink">{{obj.vendor.vendor_name}}</span>                       
@@ -76,19 +79,19 @@
             </div>
             <div class="flex-row flex-2">
                 <div class="flex-row flex-1 justify-end">
-                    <label>CHECK NO.: </label>                   
+                    <label>INVOICE NO.: </label>                   
                 </div>
                 <div class="flex-row flex-2 justify-center border-bottom">
-                    <span>{{obj.check_number}}</span>                    
+                    <span>{{obj.invoice_number}}</span>                    
                 </div>
             </div>             
         </div>
     </header>
     <main class="flex-column justify-center bordered margin-top-10">  
         <div class="flex-row justify-center">
-            <label class="flex-row flex-4 justify-center height-15 line-bordered border-bottom"><strong>ACCOUNT TITLE</strong></label>
-            <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>DEBIT</strong></label>
-            <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>CREDIT</strong></label>            
+            <label class="flex-row flex-4 justify-center line-bordered border-bottom"><strong>ACCOUNT TITLE</strong></label>
+            <label class="flex-row flex-1 justify-center line-bordered border-bottom"><strong>DEBIT</strong></label>
+            <label class="flex-row flex-1 justify-center line-bordered border-bottom"><strong>CREDIT</strong></label>            
         </div>
         <div class="flex-column height-250">
         {% for entry in obj.accounts_payable_details %}
@@ -122,10 +125,6 @@
                 <div class="flex-row flex-1 height-50">
                     <label class="flex-row flex-3 align-end">Approved by:</label>
                     <span class="flex-row flex-3 justify-center border-bottom align-end">{{ obj.approved_by }}</span>
-                </div>
-                <div class="flex-row flex-1 height-50">
-                    <label class="flex-row flex-3 align-end">Received by:</label>
-                    <span class="flex-row flex-3 justify-center border-bottom align-end"></span>
                 </div>
             </div>
         </div>
