@@ -7,6 +7,7 @@ class Disbursement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     record_date = db.Column(db.String())
     record_number = db.Column(db.String())
+    # check_number = db.Column(db.String())
     po_number = db.Column(db.String())
 
     vendor_id = db.Column(db.Integer, db.ForeignKey('vendor.id'), nullable=False)

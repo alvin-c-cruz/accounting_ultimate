@@ -1,7 +1,7 @@
 from sqlalchemy import func, and_
 from datetime import datetime, date
 from application.extensions import db
-from sqlalchemy import extract
+from sqlalchemy import extract, func, or_
 
 from .. account import Account
 from .. books_of_accounts.receipt import Receipt, ReceiptDetail
@@ -33,7 +33,9 @@ def get_account_balances_up_to(target_date_str):
                 func.sum(ObjDetail.debit - ObjDetail.credit).label('balance')
             )
             .join(Obj)
-            .filter(Obj.record_date <= target_date_str)
+            .filter(Obj.record_date <= target_date_str,
+                    or_(Obj.cancelled == None, Obj.cancelled == '', Obj.cancelled == '0', Obj.cancelled == False)
+                    )
             .group_by(ObjDetail.account_id)
         ).all()
         
@@ -67,7 +69,8 @@ def get_account_balances_in_range(start_date_str, end_date_str):
             .join(Obj)
             .filter(and_(
                 Obj.record_date >= start_date_str,
-                Obj.record_date <= end_date_str
+                Obj.record_date <= end_date_str,
+                or_(Obj.cancelled == None, Obj.cancelled == '', Obj.cancelled == '0', Obj.cancelled == False)
             ))
             .group_by(ObjDetail.account_id)
         ).all()
