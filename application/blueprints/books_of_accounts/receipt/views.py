@@ -31,7 +31,7 @@ def home():
     rows = Obj.query.filter(
         Obj.record_date.between(date_from, date_to)
     ).order_by(
-        Obj.record_date, Obj.id
+        Obj.record_number.desc()
     ).all()
 
     # Collect all unique Account objects from the sales details
