@@ -44,12 +44,19 @@
     <div class="row mb-2">
         <div class="col-6">
             <div class="row">
-                <div class="col-8">
+                <div class="col-4">
                     {% if form.errors.get('entry') %}
                     <p class="text-danger">{{ form.errors.get('entry') }}</p>
                     {% endif %}
                     {% if form.cancelled %}
                     <h1 style="color:red;">CANCELLED</h1>
+                    {% endif %}
+                </div>
+                <div class="col-4">
+                    {% if form.id %}
+                    <a href="{{ url_for('receipt.add') }}"
+                       class="btn btn-success form-control"
+                       >Add new voucher</a>
                     {% endif %}
                 </div>
                 <div class="col-4">
