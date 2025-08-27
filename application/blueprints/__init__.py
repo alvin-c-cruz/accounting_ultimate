@@ -10,3 +10,5 @@ from .books_of_accounts import receipt
 from .books_of_accounts import accounts_payable
 from .books_of_accounts import disbursement
 from .books_of_accounts import general
+
+from .books_of_accounts_extra import accounts_payable_extra

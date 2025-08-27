@@ -32,6 +32,25 @@
             {% endif %}
             <!-- End of Books of Accounts Menu -->
 
+          <!-- Extra Books Menu -->
+            {% if (
+              "Sales Extra" in current_user.user_roles 
+              or "Receipt Extra" in current_user.user_roles
+              or "Accounts Payable Extra" in current_user.user_roles
+              or "Disbursement Extra" in current_user.user_roles
+              or "General Extra" in current_user.user_roles
+              ) %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Extra Books
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% include "accounts_payable_extra/navbar.html" %}
+              </ul>
+            </li>
+            {% endif %}
+            <!-- End of Books of Accounts Menu -->
+
           
 
 
