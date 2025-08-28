@@ -2,9 +2,9 @@ from application.extensions import db
 
 from . import app_name, app_label
 
-class UserDisbursement(db.Model):
-    disbursement_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
-    disbursement = db.relationship(app_label, backref='user_prepare', lazy=True)
+class UserDisbursementExtra(db.Model):
+    disbursement_extra_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
+    disbursement_extra = db.relationship("DisbursementExtra", backref='user_prepare', lazy=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     user = db.relationship('User', backref=f'{app_name}_prepared', lazy=True)
@@ -21,9 +21,9 @@ class UserDisbursement(db.Model):
         return self.user.user_name
 
 
-class AdminDisbursement(db.Model):
-    disbursement_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
-    disbursement = db.relationship(app_label, backref='user_approved', lazy=True)
+class AdminDisbursementExtra(db.Model):
+    disbursement_extra_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
+    disbursement_extra = db.relationship("DisbursementExtra", backref='user_approved', lazy=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     user = db.relationship('User', backref=f'{app_name}_approved', lazy=True)

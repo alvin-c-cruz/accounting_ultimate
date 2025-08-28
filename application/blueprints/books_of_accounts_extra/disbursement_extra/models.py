@@ -1,9 +1,9 @@
 from application.extensions import db, short_date, long_date
-from .admin_models import AdminDisbursement as ObjAdmin
-from .admin_models import UserDisbursement as ObjUser
+from .admin_models import AdminDisbursementExtra as ObjAdmin
+from .admin_models import UserDisbursementExtra as ObjUser
 from . import app_name
 
-class Disbursement(db.Model):
+class DisbursementExtra(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     record_date = db.Column(db.String())
     record_number = db.Column(db.String())
@@ -11,7 +11,7 @@ class Disbursement(db.Model):
     po_number = db.Column(db.String())
 
     vendor_id = db.Column(db.Integer, db.ForeignKey('vendor.id'), nullable=False)
-    vendor = db.relationship('Vendor', backref='disbursements', lazy=True)
+    vendor = db.relationship('Vendor', backref='disbursement_extras', lazy=True)
 
     ap_number = db.Column(db.String())
 
@@ -54,14 +54,14 @@ class Disbursement(db.Model):
         return True if self.submitted else False
 
 
-class DisbursementDetail(db.Model):
+class DisbursementExtraDetail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    disbursement_id = db.Column(db.Integer, db.ForeignKey('disbursement.id'), nullable=False)
-    disbursement = db.relationship('Disbursement', backref='disbursement_details', lazy=True)
+    disbursement_extra_id = db.Column(db.Integer, db.ForeignKey('disbursement_extra.id'), nullable=False)
+    disbursement_extra = db.relationship('DisbursementExtra', backref='disbursement_extra_details', lazy=True)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
-    account = db.relationship('Account', backref='disbursement_details', lazy=True)
+    account = db.relationship('Account', backref='disbursement_extra_details', lazy=True)
 
     debit = db.Column(db.Float, default=0)
     credit = db.Column(db.Float, default=0)

@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from sqlalchemy import func
 from application.extensions import db
-from .models import Disbursement as Obj
-from .models import DisbursementDetail as ObjDetail
-from .admin_models import UserDisbursement as Preparer
+from .models import DisbursementExtra as Obj
+from .models import DisbursementExtraDetail as ObjDetail
+from .admin_models import UserDisbursementExtra as Preparer
 from datetime import datetime
 from . import app_name
 
@@ -44,7 +44,7 @@ def get_attributes_as_dict(object):
 @dataclass
 class SubForm:
     id: int = 0
-    disbursement_id:int = 0
+    disbursement_extra_id:int = 0
     account_id: int = 0
     debit: float = 0
     credit: float = 0
@@ -271,14 +271,14 @@ class Form:
             self.errors["record_date"] = "Please type date."
 
         if not self.record_number:
-            self.errors["record_number"] = "Please type disbursement number."
+            self.errors["record_number"] = "Please type disbursement extra number."
         else:
             duplicate = Obj.query.filter(
                 func.lower(Obj.record_number) == func.lower(self.record_number), 
                 Obj.id != self.id
             ).first()
             if duplicate:
-                self.errors["record_number"] = "Disbursement number is already used, please verify."        
+                self.errors["record_number"] = "Disbursement extra number is already used, please verify."        
 
         if not self.vendor_name:
             self.errors["vendor_name"] = "Please type vendor."

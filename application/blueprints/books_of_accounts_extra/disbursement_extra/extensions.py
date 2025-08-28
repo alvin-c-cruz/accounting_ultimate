@@ -7,7 +7,7 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
-from .models import Disbursement, DisbursementDetail
+from .models import DisbursementExtra, DisbursementExtraDetail
 from ... register.vendor import Vendor  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
@@ -27,24 +27,24 @@ double_rule_border = Border(bottom=Side(style='double'))
 
 ALIGNMENT = {
                 "Date": Alignment(horizontal="center", vertical="top"),
-                "CD No.": Alignment(horizontal="center", vertical="top"),
-                "AP No.": Alignment(horizontal="center", vertical="top"),
+                "CD Extra No.": Alignment(horizontal="center", vertical="top"),
+                "AP Extra No.": Alignment(horizontal="center", vertical="top"),
                 "Vendor": Alignment(horizontal="left", vertical="top", wrap_text=True),
                 "Particulars": Alignment(horizontal="left", vertical="top", wrap_text=True),
             }
 
 NUMBER_FORMAT = {
                 "Date": "yyyy-mmm-dd",
-                "CD No.": "General",
-                "AP No.": "General",
+                "CD Extra No.": "General",
+                "AP Extra No.": "General",
                 "Vendor": "General",
                 "Particulars": "General",
             }
 
 COLUMN_WIDTH = {
                 "Date": 12,
-                "CD No.": 10,
-                "AP No.": 12,
+                "CD Extra No.": 10,
+                "AP Extra No.": 12,
                 "Vendor": 20,
                 "Particulars": 25,
             }
@@ -84,12 +84,12 @@ def WriteData(wb, data, date_from, date_to):
     # --- Determine all account titles to create dynamic columns ---
     account_names = set()
     for disbursement in data:
-        for detail in disbursement.disbursement_details:
+        for detail in disbursement.disbursement_extra_details:
             if detail.account:
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "CD No.", "AP No.", "Vendor", "Particulars"] + account_names
+    header = ["Date", "CD Extra No.", "AP Extra No.", "Vendor", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -121,7 +121,7 @@ def WriteData(wb, data, date_from, date_to):
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
-        for detail in disbursement.disbursement_details:
+        for detail in disbursement.disbursement_extra_details:
             name = detail.account.account_title if detail.account else ""
             if not disbursement.cancelled:
                 row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
@@ -190,8 +190,8 @@ def WriteData(wb, data, date_from, date_to):
     # --- Set column widths ---
     col_widths = {
         "Date": 12,
-        "CD No.": 10,
-        "AP No.": 10,
+        "CD Extra No.": 10,
+        "AP Extra No.": 10,
         "Vendor": 30,
         "Particulars": 25,
     }
