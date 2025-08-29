@@ -58,7 +58,7 @@ class SalesExtraDetail(db.Model):
     sales_extra = db.relationship('SalesExtra', backref='sales_extra_details', lazy=True)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
-    account = db.relationship('Account', backref='sales_details', lazy=True)
+    account = db.relationship('Account', backref='sales_extra_details', lazy=True)
 
     debit = db.Column(db.Float, default=0)
     credit = db.Column(db.Float, default=0)
