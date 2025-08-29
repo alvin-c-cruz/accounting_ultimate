@@ -1,16 +1,16 @@
 from application.extensions import db, short_date, long_date
-from .admin_models import AdminReceipt as ObjAdmin
-from .admin_models import UserReceipt as ObjUser
+from .admin_models import AdminReceiptExtra as ObjAdmin
+from .admin_models import UserReceiptExtra as ObjUser
 from . import app_name
 
-class Receipt(db.Model):
+class ReceiptExtra(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     record_date = db.Column(db.String())
     record_number = db.Column(db.String())
     invoice_number = db.Column(db.String())
 
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
-    customer = db.relationship('Customer', backref='receipts', lazy=True)
+    customer = db.relationship('Customer', backref='receipt_extras', lazy=True)
 
     prepared_by = db.Column(db.String())
     checked_by = db.Column(db.String())
@@ -52,14 +52,14 @@ class Receipt(db.Model):
         return True if self.submitted else False
 
 
-class ReceiptDetail(db.Model):
+class ReceiptExtraDetail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    receipt_id = db.Column(db.Integer, db.ForeignKey('receipt.id'), nullable=False)
-    receipt = db.relationship('Receipt', backref='receipt_details', lazy=True)
+    receipt_extra_id = db.Column(db.Integer, db.ForeignKey('receipt_extra.id'), nullable=False)
+    receipt_extra = db.relationship('ReceiptExtra', backref='receipt_extra_details', lazy=True)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
-    account = db.relationship('Account', backref='receipt_details', lazy=True)
+    account = db.relationship('Account', backref='receipt_extra_details', lazy=True)
 
     debit = db.Column(db.Float, default=0)
     credit = db.Column(db.Float, default=0)

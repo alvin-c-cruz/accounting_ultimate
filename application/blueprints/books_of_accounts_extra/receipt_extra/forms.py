@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from sqlalchemy import func
 from application.extensions import db
-from .models import Receipt as Obj
-from .models import ReceiptDetail as ObjDetail
-from .admin_models import UserReceipt as Preparer
+from .models import ReceiptExtra as Obj
+from .models import ReceiptExtraDetail as ObjDetail
+from .admin_models import UserReceiptExtra as Preparer
 from datetime import datetime
 from . import app_name
 
@@ -44,7 +44,7 @@ def get_attributes_as_dict(object):
 @dataclass
 class SubForm:
     id: int = 0
-    receipt_id:int = 0
+    receipt_extra_id:int = 0
     account_id: int = 0
     debit: float = 0
     credit: float = 0

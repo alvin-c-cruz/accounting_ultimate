@@ -148,7 +148,7 @@
             {% for i, form_detail in form.details %}
             <tr>
                 <td>
-                    {{ detail_primary_key(i, form_detail, "disbursement_detail_id", form_detail.id) }}
+                    {{ detail_primary_key(i, form_detail, "disbursement_extra_detail_id", form_detail.id) }}
                     {{ detail_searchbox(i, form, form_detail, "account_name", form_detail.account_name) }}
                 </td>
                 <td>

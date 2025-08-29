@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import current_user
 import datetime
 from sqlalchemy.exc import IntegrityError
-from .models import Receipt as Obj
-from .models import ReceiptDetail as ObjDetail
+from .models import ReceiptExtra as Obj
+from .models import ReceiptExtraDetail as ObjDetail
 from .forms import Form
 from ... account import Account
 from ... register.customer import Customer
@@ -38,7 +38,7 @@ def home():
     accounts = {
         detail.account
         for row in rows
-        for detail in row.receipt_details
+        for detail in row.receipt_extra_details
     }
 
     # Sort accounts by account_number

@@ -7,7 +7,7 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
-from .models import Receipt, ReceiptDetail
+from .models import ReceiptExtra, ReceiptExtraDetail
 from ... register.customer import Customer  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
@@ -84,12 +84,12 @@ def WriteData(wb, data, date_from, date_to):
     # --- Determine all account titles to create dynamic columns ---
     account_names = set()
     for record in data:
-        for detail in record.receipt_details:
+        for detail in record.receipt_extra_details:
             if detail.account:
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "Receipt No.", "Invoice No.", "Customer", "Particulars"] + account_names
+    header = ["Date", "Receipt Extra No.", "Invoice No.", "Customer", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -121,7 +121,7 @@ def WriteData(wb, data, date_from, date_to):
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
-        for detail in record.receipt_details:
+        for detail in record.receipt_extra_details:
             name = detail.account.account_title if detail.account else ""
             if not record.cancelled:
                 row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
