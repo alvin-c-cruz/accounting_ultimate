@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import current_user
 import datetime
 from sqlalchemy.exc import IntegrityError
-from .models import General as Obj
-from .models import GeneralDetail as ObjDetail
+from .models import GeneralExtra as Obj
+from .models import GeneralExtraDetail as ObjDetail
 from .forms import Form
 from application.extensions import db, year_first_day, month_last_day, next_control_number 
 from .extensions import create_journal
@@ -36,7 +36,7 @@ def home():
     accounts = {
         detail.account
         for row in rows
-        for detail in row.general_details
+        for detail in row.general_extra_details
     }
 
     # Sort accounts by account_number

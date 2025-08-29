@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Print Preview: JV No. {{obj.record_number}}</title>
+    <title>Print Preview: JV Extra No. {{obj.record_number}}</title>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/voucher.css')}}">
     <style>
         pre {
@@ -41,7 +41,7 @@
             <div class="flex-row flex-1 justify-center">
                 <div class="flex-row justify-center align-center">
                     <label>No.</label>
-                    <span><strong class="font-size-20">{{obj.record_number}}</strong></span>                    
+                    <span><strong class="font-size-20">{{obj.record_number}} EX</strong></span>                    
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
             <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>CREDIT</strong></label>            
         </div>
         <div class="flex-column height-250">
-        {% for entry in obj.general_details %}
+        {% for entry in obj.general_extra_details %}
         <div class="flex-row justify-center">
             {% if entry.debit %}
             <label class="flex-row flex-4 justify-start"><span class="margin-left-10">{{entry.account.account_title}} {% if entry.side_note %}({{ entry.side_note }}){% endif %}</span></label>

@@ -1,9 +1,9 @@
 from application.extensions import db, short_date, long_date
-from .admin_models import AdminGeneral as ObjAdmin
-from .admin_models import UserGeneral as ObjUser
+from .admin_models import AdminGeneralExtra as ObjAdmin
+from .admin_models import UserGeneralExtra as ObjUser
 from . import app_name
 
-class General(db.Model):
+class GeneralExtra(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     record_date = db.Column(db.String())
     record_number = db.Column(db.String())
@@ -47,14 +47,14 @@ class General(db.Model):
         return True if self.submitted else False
 
 
-class GeneralDetail(db.Model):
+class GeneralExtraDetail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    general_id = db.Column(db.Integer, db.ForeignKey('general.id'), nullable=False)
-    general = db.relationship('General', backref='general_details', lazy=True)
+    general_extra_id = db.Column(db.Integer, db.ForeignKey('general_extra.id'), nullable=False)
+    general_extra = db.relationship('GeneralExtra', backref='general_extra_details', lazy=True)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
-    account = db.relationship('Account', backref='general_details', lazy=True)
+    account = db.relationship('Account', backref='general_extra_details', lazy=True)
 
     debit = db.Column(db.Float, default=0)
     credit = db.Column(db.Float, default=0)

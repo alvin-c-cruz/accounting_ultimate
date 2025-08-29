@@ -2,9 +2,9 @@ from application.extensions import db
 
 from . import app_name, app_label
 
-class UserGeneral(db.Model):
-    general_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
-    general = db.relationship(app_label.replace(" ", ""), backref='user_prepare', lazy=True)
+class UserGeneralExtra(db.Model):
+    general_extra_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
+    general_extra = db.relationship(app_label.replace(" ", ""), backref='user_prepare', lazy=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     user = db.relationship('User', backref=f'{app_name}_prepared', lazy=True)
@@ -21,9 +21,9 @@ class UserGeneral(db.Model):
         return self.user.user_name
 
 
-class AdminGeneral(db.Model):
-    general_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
-    general = db.relationship(app_label.replace(" ", ""), backref='user_approved', lazy=True)
+class AdminGeneralExtra(db.Model):
+    general_extra_id = db.Column(db.Integer, db.ForeignKey(f'{app_name}.id'), primary_key=True)
+    general_extra = db.relationship(app_label.replace(" ", ""), backref='user_approved', lazy=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     user = db.relationship('User', backref=f'{app_name}_approved', lazy=True)
