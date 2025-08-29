@@ -88,7 +88,7 @@
             <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>CREDIT</strong></label>            
         </div>
         <div class="flex-column height-300">
-        {% for entry in obj.sales_details %}
+        {% for entry in obj.receipt_details %}
         <div class="flex-row justify-center">
             {% if entry.debit %}
             <label class="flex-row flex-4 justify-start"><span class="margin-left-10">{{entry.account.account_title}} {% if entry.side_note %}({{ entry.side_note }}){% endif %}</span></label>
