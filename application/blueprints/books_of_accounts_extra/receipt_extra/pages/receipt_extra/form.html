@@ -29,14 +29,14 @@
 <div class="container p-5">
     {% if form.id %}
         {% if form.submitted or form.cancelled %}
-        <h1 class="mb-4"><span style="color:red;">Locked</span> Receipt</h1>
+        <h1 class="mb-4"><span style="color:red;">Locked</span> Receipt Extra</h1>
         {% else %}
-        <h1 class="mb-4">Edit Receipt</h1>
+        <h1 class="mb-4">Edit Receipt Extra</h1>
         {% endif %}
         <form action="{{ url_for('receipt_extra.edit', record_id=form.id) }}" method="post">
             <input type="number" name="record_id" value="{{ form.id }}" hidden>
     {% else %}
-        <h1 class="mb-4">New Receipt</h1>
+        <h1 class="mb-4">New Receipt Extra</h1>
         <form action="{{ url_for('receipt_extra.add') }}" method="post">
     {% endif %}
     <hr>
