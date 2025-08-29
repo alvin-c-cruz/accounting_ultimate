@@ -10,6 +10,12 @@ from .. books_of_accounts.disbursement import Disbursement, DisbursementDetail
 from .. books_of_accounts.accounts_payable import AccountsPayable, AccountsPayableDetail
 from .. books_of_accounts.general import General, GeneralDetail
 
+from .. books_of_accounts_extra.receipt_extra import ReceiptExtra, ReceiptExtraDetail
+from .. books_of_accounts_extra.sales_extra import SalesExtra, SalesExtraDetail
+from .. books_of_accounts_extra.disbursement_extra import DisbursementExtra, DisbursementExtraDetail
+from .. books_of_accounts_extra.accounts_payable_extra import AccountsPayableExtra, AccountsPayableExtraDetail
+from .. books_of_accounts_extra.general_extra import GeneralExtra, GeneralExtraDetail
+
 
 books = [
     (Receipt, ReceiptDetail),
@@ -17,6 +23,11 @@ books = [
     (Disbursement, DisbursementDetail),
     (AccountsPayable, AccountsPayableDetail),
     (General, GeneralDetail),
+    (ReceiptExtra, ReceiptExtraDetail),
+    (SalesExtra, SalesExtraDetail),
+    (DisbursementExtra, DisbursementExtraDetail),
+    (AccountsPayableExtra, AccountsPayableExtraDetail),
+    (GeneralExtra, GeneralExtraDetail),
 ]
     
 
