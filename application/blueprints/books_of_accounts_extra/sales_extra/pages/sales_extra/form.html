@@ -2,7 +2,7 @@
 {% from "macros_form_header.html" import date_box, text_box, select_box, text_area, search_box %}
 {% from "macros_form_detail.html" import detail_primary_key, detail_textbox, detail_number_float, detail_searchbox %}
 
-{% block title %}Sales{% endblock %}
+{% block title %}Sales Extra{% endblock %}
 
 {% block styles %}
 <style>
@@ -29,15 +29,15 @@
 <div class="container p-5">
     {% if form.id %}
         {% if form.submitted or form.cancelled %}
-        <h1 class="mb-4"><span style="color:red;">Locked</span> Sales</h1>
+        <h1 class="mb-4"><span style="color:red;">Locked</span> Sales Extra</h1>
         {% else %}
-        <h1 class="mb-4">Edit Sales</h1>
+        <h1 class="mb-4">Edit Sales Extra</h1>
         {% endif %}
-        <form action="{{ url_for('sales.edit', record_id=form.id) }}" method="post">
+        <form action="{{ url_for('sales_extra.edit', record_id=form.id) }}" method="post">
             <input type="number" name="record_id" value="{{ form.id }}" hidden>
     {% else %}
-        <h1 class="mb-4">New Sales</h1>
-        <form action="{{ url_for('sales.add') }}" method="post">
+        <h1 class="mb-4">New Sales Extra</h1>
+        <form action="{{ url_for('sales_extra.add') }}" method="post">
     {% endif %}
     <hr>
 
@@ -54,14 +54,14 @@
                 </div>
                 <div class="col-4">
                     {% if form.id %}
-                    <a href="{{ url_for('sales.add') }}"
+                    <a href="{{ url_for('sales_extra.add') }}"
                        class="btn btn-success form-control"
                        >Add new voucher</a>
                     {% endif %}
                 </div>
                 <div class="col-4">
                     {% if form.id and not (form.submitted or form.cancelled) %}
-                    <a href="{{ url_for('sales.print', record_id=form.id) }}"
+                    <a href="{{ url_for('sales_extra.print', record_id=form.id) }}"
                        class="btn btn-secondary form-control"
                        target="_blank">Print Preview</a>
                     {% endif %}
@@ -78,7 +78,7 @@
                 <div class="col-4">
                     {% if form.id %}
                         {% if form.submitted or form.cancelled %}
-                        <a href="{{ url_for('sales.print', record_id=form.id) }}"
+                        <a href="{{ url_for('sales_extra.print', record_id=form.id) }}"
                            class="btn btn-secondary form-control"
                            target="_blank">Print</a>
                         {% else %}
@@ -90,7 +90,7 @@
                 </div>
                 <div class="col-4">
                     {% if not form.cancelled and form.id %}
-                    <a href="{{ url_for('sales.cancel', record_id=form.id) }}"
+                    <a href="{{ url_for('sales_extra.cancel', record_id=form.id) }}"
                        class="btn btn-danger form-control"
                        onclick="return confirmMessage('Type YES to cancel this record.');">Cancel</a>
                     {% endif %}
@@ -103,7 +103,7 @@
 
     <div class="row mb-2">
         {{ date_box(form, "Date", "record_date", form.record_date, autofocus=True) }}
-        {{ text_box(form, "Sales Invoice No.", "record_number", form.record_number) }}
+        {{ text_box(form, "Sales Extra No.", "record_number", form.record_number) }}
     </div>
 
     <div class="row mb-2">
@@ -144,7 +144,7 @@
             {% for i, form_detail in form.details %}
             <tr>
                 <td>
-                    {{ detail_primary_key(i, form_detail, "sales_detail_id", form_detail.id) }}
+                    {{ detail_primary_key(i, form_detail, "sales_extra_detail_id", form_detail.id) }}
                     {{ detail_searchbox(i, form, form_detail, "account_name", form_detail.account_name) }}
                 </td>
                 <td>

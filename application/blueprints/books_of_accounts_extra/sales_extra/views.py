@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import current_user
 import datetime
 from sqlalchemy.exc import IntegrityError
-from .models import Sales as Obj
-from .models import SalesDetail as ObjDetail
+from .models import SalesExtra as Obj
+from .models import SalesExtraDetail as ObjDetail
 from .forms import Form
 from ... account import Account
 from ... register.customer import Customer
@@ -38,7 +38,7 @@ def home():
     accounts = {
         detail.account
         for row in rows
-        for detail in row.sales_details
+        for detail in row.sales_extra_details
     }
 
     # Sort accounts by account_number
@@ -241,4 +241,3 @@ def download():
                     download_name=f"{app_name}_journal_{date_from}_to_{date_to}.xlsx",
                     mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
-

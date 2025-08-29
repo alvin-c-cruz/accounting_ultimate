@@ -7,7 +7,7 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 
-from .models import Sales, SalesDetail
+from .models import SalesExtra, SalesExtraDetail
 from ... register.customer import Customer  # adjust path as needed
 from collections import defaultdict
 from decimal import Decimal
@@ -27,7 +27,7 @@ double_rule_border = Border(bottom=Side(style='double'))
 
 ALIGNMENT = {
                 "Date": Alignment(horizontal="center", vertical="top"),
-                "SI No.": Alignment(horizontal="center", vertical="top"),
+                "Sales Extra No.": Alignment(horizontal="center", vertical="top"),
                 "DR No.": Alignment(horizontal="center", vertical="top"),
                 "Customer": Alignment(horizontal="left", vertical="top", wrap_text=True),
                 "Particulars": Alignment(horizontal="left", vertical="top", wrap_text=True),
@@ -35,7 +35,7 @@ ALIGNMENT = {
 
 NUMBER_FORMAT = {
                 "Date": "yyyy-mmm-dd",
-                "SI No.": "General",
+                "Sales Extra No.": "General",
                 "DR No.": "General",
                 "Customer": "General",
                 "Particulars": "General",
@@ -43,7 +43,7 @@ NUMBER_FORMAT = {
 
 COLUMN_WIDTH = {
                 "Date": 12,
-                "SI No.": 10,
+                "Sales Extra No.": 10,
                 "DR No.": 12,
                 "Customer": 20,
                 "Particulars": 25,
@@ -89,7 +89,7 @@ def WriteData(wb, data, date_from, date_to):
                 account_names.add(detail.account.account_title)
 
     account_names = sorted(account_names)  # keep columns in order
-    header = ["Date", "SI No.", "DR No.", "Customer", "Particulars"] + account_names
+    header = ["Date", "Sales Extra No.", "DR No.", "Customer", "Particulars"] + account_names
     ws.append(header)
 
     # Style header row
@@ -121,7 +121,7 @@ def WriteData(wb, data, date_from, date_to):
 
         # Aggregate account values for this disbursement
         row_data = defaultdict(Decimal)
-        for detail in record.sales_details:
+        for detail in record.sales_extra_details:
             name = detail.account.account_title if detail.account else ""
             if not record.cancelled:
                 row_data[name] += Decimal(detail.debit or 0) - Decimal(detail.credit or 0)
@@ -190,7 +190,7 @@ def WriteData(wb, data, date_from, date_to):
     # --- Set column widths ---
     col_widths = {
         "Date": 12,
-        "SI No.": 10,
+        "Sales Extra No.": 10,
         "DR No.": 10,
         "Customer": 30,
         "Particulars": 25,

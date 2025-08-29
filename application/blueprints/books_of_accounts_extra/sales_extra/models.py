@@ -1,16 +1,16 @@
 from application.extensions import db, short_date, long_date
-from .admin_models import AdminSales as ObjAdmin
-from .admin_models import UserSales as ObjUser
+from .admin_models import AdminSalesExtra as ObjAdmin
+from .admin_models import UserSalesExtra as ObjUser
 from . import app_name
 
-class Sales(db.Model):
+class SalesExtra(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     record_date = db.Column(db.String())
     record_number = db.Column(db.String())
     dr_number = db.Column(db.String())
 
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
-    customer = db.relationship('Customer', backref='sales', lazy=True)
+    customer = db.relationship('Customer', backref='sales_extras', lazy=True)
 
     prepared_by = db.Column(db.String())
     checked_by = db.Column(db.String())
@@ -51,11 +51,11 @@ class Sales(db.Model):
         return True if self.submitted else False
 
 
-class SalesDetail(db.Model):
+class SalesExtraDetail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    sales_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
-    sales = db.relationship('Sales', backref='sales_details', lazy=True)
+    sales_extra_id = db.Column(db.Integer, db.ForeignKey('sales_extra.id'), nullable=False)
+    sales_extra = db.relationship('SalesExtra', backref='sales_extra_details', lazy=True)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     account = db.relationship('Account', backref='sales_details', lazy=True)

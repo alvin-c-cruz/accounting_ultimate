@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from sqlalchemy import func
 from application.extensions import db
-from .models import Sales as Obj
-from .models import SalesDetail as ObjDetail
-from .admin_models import UserSales as Preparer
+from .models import SalesExtra as Obj
+from .models import SalesExtraDetail as ObjDetail
+from .admin_models import UserSalesExtra as Preparer
 from datetime import datetime
 from . import app_name
 
@@ -44,7 +44,7 @@ def get_attributes_as_dict(object):
 @dataclass
 class SubForm:
     id: int = 0
-    sales_id:int = 0
+    sales_extra_id:int = 0
     account_id: int = 0
     debit: float = 0
     credit: float = 0
