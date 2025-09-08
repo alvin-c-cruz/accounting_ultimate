@@ -181,11 +181,14 @@ def upload():
         cell_customer_name = sheet["A1"].value
         cell_tin = sheet["B1"].value
         cell_address = sheet["C1"].value        
-        checker = (title, cell_customer_name, cell_tin, cell_address)
-        
-        if checker == ("Customers", "Customer Name", "TIN", "Address"):
+        cell_business_style = sheet["D1"].value        
+        cell_salesman = sheet["E1"].value  
+              
+        checker = (title, cell_customer_name, cell_tin, cell_address, cell_business_style, cell_salesman)
+    
+        if checker == ("Customers", "Customer Name", "TIN", "Address", "Business Style", "Salesman"):
             for row in sheet.iter_rows(min_row=2, values_only=True):
-                customer_name, tin, address = row[:3]
+                customer_name, tin, address, business_style, salesman = row[:5]
 
                 if not customer_name:
                     continue
@@ -202,7 +205,9 @@ def upload():
                 customer = Obj(
                     customer_name=str(customer_name).upper(),
                     tin=str(tin or "").upper(),
-                    address=str(address or "").upper()
+                    address=str(address or "").upper(),
+                    business_style=str(business_style or "").upper(),
+                    salesman=str(salesman or "").upper()
                 )
 
                 db.session.add(customer)
@@ -236,7 +241,7 @@ def download_template():
     ws.title = "Customers"
 
     # Header row
-    ws.append(["Customer Name", "TIN", "Address"])
+    ws.append(["Customer Name", "TIN", "Address", "Business Style", "Salesman"])
 
     # Save workbook to memory
     file_stream = BytesIO()
