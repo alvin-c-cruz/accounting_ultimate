@@ -8,6 +8,8 @@ class Customer(db.Model):
     customer_name = db.Column(db.String(255))
     tin = db.Column(db.String(255))
     address = db.Column(db.String(255))
+    business_style = db.Column(db.String(), default="")
+    salesman = db.Column(db.String(), default="")
 
     def __str__(self):
         return self.customer_name

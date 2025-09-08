@@ -103,7 +103,7 @@
                         {% if matched %}
                             {% set amount = matched[0].debit - matched[0].credit %}
                             <td style="text-align: right;">
-                                {{ "{:,.2f}".format(amount | float if amount else "") }}
+                                {{ amount }}
                                 {% set _ = totals.update({title: totals[title] + amount}) %}
                             </td>
                         {% else %}

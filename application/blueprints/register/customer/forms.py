@@ -37,6 +37,8 @@ class Form:
     customer_name: str = ""
     tin: str = ""
     address: str = ""
+    business_style: str = ""
+    salesman: str = ""
     
     user_prepare_id: int = None
     user_prepare: str = ""
@@ -48,7 +50,11 @@ class Form:
             if attribute in ["errors"]:
                 continue
             else:
-                setattr(self, attribute, getattr(row, attribute))
+                value = getattr(row, attribute)
+                if value is None:
+                    setattr(self, attribute, "")
+                else:
+                    setattr(self, attribute, value)
 
     def _save(self):
         if self.id is None:
