@@ -2,6 +2,9 @@ from . import main
 from . import user
 
 from . import account
+from . import account_class
+from . import account_type
+
 from .register import vendor
 from .register import customer
 from .register import measure
@@ -18,4 +21,5 @@ from .books_of_accounts_extra import receipt_extra
 from .books_of_accounts_extra import accounts_payable_extra
 from .books_of_accounts_extra import disbursement_extra
 from .books_of_accounts_extra import general_extra
+
 

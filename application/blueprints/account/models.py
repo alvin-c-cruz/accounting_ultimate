@@ -8,6 +8,9 @@ class Account(db.Model):
     account_number = db.Column(db.String(255))
     account_title = db.Column(db.String(255))
     account_description = db.Column(db.String(255))
+    
+    account_type_id = db.Column(db.Integer, db.ForeignKey('account_type.id'), nullable=True)
+    account_type = db.relationship('AccountType', backref='account_type_details', lazy=True)
 
     def __str__(self):
         return f"{self.account_number}: {self.account_title}"
