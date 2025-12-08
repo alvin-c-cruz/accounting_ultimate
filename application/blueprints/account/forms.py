@@ -7,6 +7,8 @@ from .admin_models import AdminAccount as Approver
 from . import app_name
 from datetime import datetime
 
+from .. account_type import AccountType
+
 def get_attributes(object):
     attributes = [x for x in dir(object) if (not x.startswith("_"))]
     exceptions = (
@@ -39,6 +41,8 @@ class Form:
     account_number: str = ""
     account_title: str = ""
     account_description: str = ""
+    account_type_name: str = ""
+    account_type_id: int = None
     
     user_prepare_id: int = None
     user_prepare: str = ""
@@ -47,10 +51,14 @@ class Form:
        
     def _populate(self, row):
         for attribute in get_attributes(self):
-            if attribute in ["errors"]:
+            if attribute in ["errors", "account_type_name"]:
                 continue
             else:
-                setattr(self, attribute, getattr(row, attribute))
+                attribute_value = getattr(row, attribute)
+                setattr(self, attribute, attribute_value)
+                if attribute == "account_class_id":
+                    account_type = AccountType.query.filter_by(id=attribute_value).first()
+                    self.account_type_name = account_type.account_type_name
 
     def _save(self):
         if self.id is None:
@@ -103,6 +111,12 @@ class Form:
                 value = getattr(request_form, "get")("record_id")
                 if value:
                     setattr(self, "id", int(value))
+            elif attribute == "account_type_name":
+                attribute_value = getattr(request_form, "get")("record_id")
+                account_type = AccountType.query.filter_by(id=attribute_value).first()
+                self.account_type_name = account_type.account_type_name
+                self.account_type_id = account_type.id      
+                      
             elif attribute in ("submitted", "cancelled"):
                 continue
             else:
@@ -139,6 +153,17 @@ class Form:
                     ).first()
             if duplicate:
                 self.errors["account_title"] = "Account title is already used."        
+
+        if not self.account_type_name:
+            self.errors["account_type_name"] = "Please type account type."
+        else:
+            existing = AccountType.query.filter(
+                func.lower(
+                    AccountType.account_type_name
+                    ) == func.lower(self.account_type_name)
+                    ).first()
+            if not existing:
+                self.errors["account_type_name"] = "Account Type is invalid."        
 
         if not self.errors:
             return True     

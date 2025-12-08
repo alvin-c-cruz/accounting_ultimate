@@ -24,7 +24,7 @@ ROLES_ACCEPTED = app_label
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
 def home():
-    rows = Obj.query.order_by(getattr(Obj, f"{app_name}_name")).all()
+    rows = Obj.query.order_by(getattr(Obj, "priority")).all()
 
     context = {
         "rows": rows

@@ -65,3 +65,31 @@
     </div>
 </div>
 {% endmacro %}
+
+{% macro search_box(form, field_label, field_name, field_value, autosearch, autofocus=False) %}
+<div class="row mb-3">
+    <label for="{{ field_name }}" class="col-sm-2 col-form-label">{{ field_label }}</label>
+    <div class="col-sm-10">
+        <input type="text" id="{{ field_name }}" name="{{ field_name }}" value="{{ field_value }}" 
+        class="form-control upper-case ui-autocomplete-input" {% if autofocus %} autofocus {% endif %} 
+        {% if form.submitted %} readonly {% else %} autocomplete="off" {% endif %} 
+        spellcheck="false" data-ms-editor="true">
+
+        {% if form.errors.get('{{ field_name }}') %}
+        <p class="text-danger">{{ form.errors.get('{{ field_name }}') }}</p>
+        {% endif %}    
+    </div>
+    <script>
+    $(function() {
+        $.ajax({
+            url: '{{ autosearch }}'
+        }).done(function (data){
+            $('#{{ field_name }}').autocomplete({
+                source: data,
+                minLength: 2
+            });
+        });
+    });
+</script>
+</div>
+{% endmacro %}
