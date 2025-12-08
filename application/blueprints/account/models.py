@@ -28,4 +28,46 @@ class Account(db.Model):
     @property
     def account_name(self):
         return f"{self.account_number}: {self.account_title}"
+    
+    def balance(self):
+        books = [
+            "sales", 
+            "receipt",
+            "accounts_payable",
+            "disbursement", 
+            "general",
+            "sales_extra", 
+            "receipt_extra",
+            "accounts_payable_extra",
+            "disbursement_extra", 
+            "general_extra",
+            ]
+
+        _balance = 0 
+        for book in books:
+            _balance += sum(d.debit - d.credit for d in getattr(self,f"{book}_details" ))
+            
+        return _balance
+    
+    def formatted_balance(self):
+        return '{:,.2f}'.format(self.balance())
+    
+    def debit_balance(self):
+        if self.balance() > 0:
+            return self.balance()
+        else:
+            return 0
+        
+    def credit_balance(self):
+        if self.balance() < 0:
+            return -self.balance()
+        else:
+            return 0
+
+    def formatted_debit_balance(self):
+        return '{:,.2f}'.format(self.debit_balance())
+    
+    def formatted_credit_balance(self):
+        return '{:,.2f}'.format(self.credit_balance())
+        
 

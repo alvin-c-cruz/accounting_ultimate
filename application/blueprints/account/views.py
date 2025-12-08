@@ -265,18 +265,24 @@ def download_accounts():
     ws.title = "Chart of Accounts"
 
     # Header row
-    ws.append(["Account Number", "Account Title", "Description", "Type"])
+    ws.append(["Account Number", "Account Title", "Debit", "Credit"])
     
     rows = Obj.query.order_by(getattr(Obj, f"account_number")).all()
+    start_row = 2
+    end_row = len(rows) + 1
     
     for row in rows:
         list_row = [
             row.account_number,
             row.account_title,
-            row.account_description,
-            row.account_type.account_type_name if row.account_type else ""
+            row.debit_balance(),
+            row.credit_balance()
         ]
         ws.append(list_row)
+        
+    ws.append([])
+        
+    ws.append(["Total", "", f"=SUM(C{start_row}:C{end_row})", f"=SUM(D{start_row}:D{end_row})"])
 
     # Save workbook to memory
     file_stream = BytesIO()
