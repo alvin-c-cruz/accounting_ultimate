@@ -26,7 +26,7 @@ ROLES_ACCEPTED = app_label
 @login_required
 @roles_accepted([ROLES_ACCEPTED])
 def home():
-    rows = Obj.query.order_by(getattr(Obj, f"{app_name}_name")).all()
+    rows = Obj.query.order_by(getattr(Obj, "priority")).all()
 
     context = {
         "rows": rows
@@ -186,6 +186,7 @@ def upload():
         cell_order = sheet["C1"].value
         
         checker = (title, cell_account_type_name, cell_account_class_name, cell_order)
+        print(checker)
         if checker == ("Account Types", "Description", "Classification", "Order"):
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 account_type_name, account_class_name, priority = row[:3]

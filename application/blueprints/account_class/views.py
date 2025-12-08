@@ -183,6 +183,7 @@ def upload():
         cell_priority = sheet["B1"].value
         
         checker = (title, cell_account_class, cell_priority)
+        print(checker)
         if checker == ("Account Class", "Description", "Order"):
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 account_class_name, priority = row[:2]

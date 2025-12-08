@@ -254,3 +254,38 @@ def download_template():
         download_name="account.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
+
+@bp.route("/download-accounts", methods=["GET"])
+@login_required
+@roles_accepted([ROLES_ACCEPTED])
+def download_accounts():
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Chart of Accounts"
+
+    # Header row
+    ws.append(["Account Number", "Account Title", "Description", "Type"])
+    
+    rows = Obj.query.order_by(getattr(Obj, f"account_number")).all()
+    
+    for row in rows:
+        list_row = [
+            row.account_number,
+            row.account_title,
+            row.account_description,
+            row.account_type.account_type_name if row.account_type else ""
+        ]
+        ws.append(list_row)
+
+    # Save workbook to memory
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+
+    return send_file(
+        file_stream,
+        as_attachment=True,
+        download_name="account.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
