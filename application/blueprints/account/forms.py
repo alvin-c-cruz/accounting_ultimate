@@ -58,7 +58,8 @@ class Form:
                 setattr(self, attribute, attribute_value)
                 if attribute == "account_type_id":
                     account_type = AccountType.query.filter_by(id=attribute_value).first()
-                    self.account_type_name = account_type.account_type_name
+                    self.account_type_name = account_type.account_type_name if account_type else ""
+                        
 
     def _save(self):
         if self.id is None:
@@ -115,8 +116,12 @@ class Form:
             elif attribute == "account_type_name":
                 attribute_value = getattr(request_form, "get")("account_type_name")
                 account_type = AccountType.query.filter_by(account_type_name=attribute_value).first()
-                self.account_type_name = account_type.account_type_name
-                self.account_type_id = account_type.id      
+                if account_type:
+                    self.account_type_name = account_type.account_type_name
+                    self.account_type_id = account_type.id      
+                else:
+                    self.account_type_name = ""
+                    self.account_type_id = 0      
                       
             elif attribute in ("submitted", "cancelled"):
                 continue
