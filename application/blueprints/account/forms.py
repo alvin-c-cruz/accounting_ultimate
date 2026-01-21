@@ -56,7 +56,7 @@ class Form:
             else:
                 attribute_value = getattr(row, attribute)
                 setattr(self, attribute, attribute_value)
-                if attribute == "account_class_id":
+                if attribute == "account_type_id":
                     account_type = AccountType.query.filter_by(id=attribute_value).first()
                     self.account_type_name = account_type.account_type_name
 
@@ -65,6 +65,7 @@ class Form:
             # Add a new record
             _dict = get_attributes_as_dict(self)
             if "locked" in _dict: _dict.pop("locked")
+            _dict.pop("account_type_name")
             
             new_record = Obj(
                 **_dict
@@ -112,8 +113,8 @@ class Form:
                 if value:
                     setattr(self, "id", int(value))
             elif attribute == "account_type_name":
-                attribute_value = getattr(request_form, "get")("record_id")
-                account_type = AccountType.query.filter_by(id=attribute_value).first()
+                attribute_value = getattr(request_form, "get")("account_type_name")
+                account_type = AccountType.query.filter_by(account_type_name=attribute_value).first()
                 self.account_type_name = account_type.account_type_name
                 self.account_type_id = account_type.id      
                       
