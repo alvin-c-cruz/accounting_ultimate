@@ -61,9 +61,9 @@
                 </div>
                 <div class="col-4">
                     {% if form.id and not (form.submitted or form.cancelled) %}
-                    <a href="{{ url_for('sales.print', record_id=form.id) }}"
+                    <a href="#"
                        class="btn btn-secondary form-control"
-                       target="_blank">Print Preview</a>
+                       onclick="window.open('{{ url_for('sales.print', record_id=form.id) }}', '_blank', 'width=1200,height=700,scrollbars=yes,resizable=yes')">Print Preview</a>
                     {% endif %}
                 </div>
             </div>
@@ -78,9 +78,10 @@
                 <div class="col-4">
                     {% if form.id %}
                         {% if form.submitted or form.cancelled %}
-                        <a href="{{ url_for('sales.print', record_id=form.id) }}"
+                        <a href="#"
+                           onclick="window.open('{{ url_for('sales.print', record_id=form.id) }}', '_blank', 'width=1200,height=700,scrollbars=yes,resizable=yes')"
                            class="btn btn-secondary form-control"
-                           target="_blank">Print</a>
+                           >Print</a>
                         {% else %}
                         <input type="submit" value="Submit for Printing" name="cmd_button"
                                class="btn btn-primary form-control"

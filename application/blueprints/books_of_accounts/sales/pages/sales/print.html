@@ -20,8 +20,22 @@
         textarea {
             color: red;
         }
+
     </style>
     {% endif %}
+
+    <style>
+                /* PRINT BUTTON */
+            .print-btn { display: block; margin: 12px auto 0; padding: 6px 20px; font-family: 'DM Mono', monospace; font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase; background: gray; color: #fff; border: none; border-radius: 3px; cursor: pointer; }
+            .print-btn:hover { background: lightgreen; }
+        @media print {
+            @page { size: A4 portrait; margin: 10mm 12mm 10mm; }
+            body { background: #fff; padding: 0; font-size: 8pt; }
+            .page { box-shadow: none; padding: 0; width: 100%; min-height: unset; }
+            .print-btn { display: none !important; }
+        }
+
+    </style>
 </head>
 <body>
 <div class="container">
@@ -125,5 +139,11 @@
         </div>
     </footer>
 </div>
+
+{% if obj.submitted %}
+<button class="print-btn" onclick="window.print()">⎙ &nbsp; Print / Save as PDF</button>
+{% endif %}
+
+<button class="print-btn" onclick="window.close()">✕ &nbsp; Close Page</button>
 </body>
 </html>
